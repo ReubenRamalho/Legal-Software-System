@@ -16,3 +16,15 @@ Projeto da disciplina Métodos de Projeto de Software do Professor Raoni
 
 ### Diagrama de Classes
 ![Diagrama de Classes](diagrams/class_diagram.jpeg)
+
+## Como Executar
+
+### Compilar
+```powershell
+javac -d code/bin (Get-ChildItem -Path code/src -Include *.java -Recurse).FullName
+```
+
+### Executar
+```powershell
+java -cp code/bin com.usuarios.Main
+```
