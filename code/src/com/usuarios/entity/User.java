@@ -1,4 +1,4 @@
-package com.usuarios.domain.entity;
+package com.usuarios.entity;
 
 import java.util.Objects;
 import java.util.UUID;

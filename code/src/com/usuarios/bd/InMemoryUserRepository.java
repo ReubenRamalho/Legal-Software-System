@@ -1,7 +1,7 @@
-package com.usuarios.infrastructure.persistence;
+package com.usuarios.bd;
 
-import com.usuarios.domain.entity.IUserRepository;
-import com.usuarios.domain.entity.User;
+import com.usuarios.entity.IUserRepository;
+import com.usuarios.entity.User;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;

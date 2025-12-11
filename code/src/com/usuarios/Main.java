@@ -2,8 +2,8 @@ package com.usuarios;
 
 import com.usuarios.application.dto.CreateUserDTO;
 import com.usuarios.application.service.UserService;
-import com.usuarios.domain.entity.User;
-import com.usuarios.infrastructure.persistence.InMemoryUserRepository;
+import com.usuarios.entity.User;
+import com.usuarios.bd.InMemoryUserRepository;
 import java.util.List;
 import java.util.Scanner;
 

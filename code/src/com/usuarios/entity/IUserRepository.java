@@ -1,4 +1,4 @@
-package com.usuarios.domain.entity;
+package com.usuarios.entity;
 
 import java.util.List;
 import java.util.Optional;
