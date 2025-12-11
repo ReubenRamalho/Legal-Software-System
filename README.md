@@ -12,10 +12,10 @@ Projeto da disciplina Métodos de Projeto de Software do Professor Raoni
 ## Diagramas
 
 ### Diagrama de Casos de Uso - Gerenciar Usuários
-![Diagrama de Casos de Uso](diagrams/diagrama_de_casos_de_uso_gerenciar_usuarios.png)
+![Diagrama de Casos de Uso](diagrams/v1/diagrama_de_casos_de_uso_gerenciar_usuarios.png)
 
 ### Diagrama de Classes
-![Diagrama de Classes](diagrams/class_diagram.jpeg)
+![Diagrama de Classes](diagrams/v1/class_diagram.jpeg)
 
 ## Como Executar
 
