@@ -1,5 +1,8 @@
 package com.example.demo.usuarios;
 
+import lombok.Getter;
+
+@Getter
 public class CreateUserDTO {
 
     private final String name;
@@ -14,25 +17,5 @@ public class CreateUserDTO {
         this.type = type;
         this.login = login;
         this.senha = senha;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public String getLogin() {
-        return login;
-    }
-
-    public String getSenha() {
-        return senha;
     }
 }

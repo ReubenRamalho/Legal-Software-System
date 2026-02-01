@@ -16,20 +16,19 @@ public class UserService {
 
     public void createUser(CreateUserDTO dto) {
 
-    validarLogin(dto.getLogin());
-    validarEmail(dto.getEmail());
-    validarSenha(dto.getSenha(), dto.getLogin(), dto.getEmail());
+        validarLogin(dto.getLogin());
+        validarEmail(dto.getEmail());
+        validarSenha(dto.getSenha(), dto.getLogin(), dto.getEmail());
 
-    User user = new User(
-        dto.getName(),
-        dto.getEmail(),
-        dto.getType(),
-        dto.getLogin(),
-        dto.getSenha()
-    );
+        User user = new User(
+                dto.getName(),
+                dto.getEmail(),
+                dto.getType(),
+                dto.getLogin(),
+                dto.getSenha());
 
-    userRepository.save(user);
-}
+        userRepository.save(user);
+    }
 
     public List<User> listAllUsers() {
         return userRepository.findAll();
