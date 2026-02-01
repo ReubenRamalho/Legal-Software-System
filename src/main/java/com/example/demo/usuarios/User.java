@@ -6,9 +6,9 @@ import jakarta.persistence.Table;
 import java.util.Objects;
 import java.util.UUID;
 
-@Data
 @Entity
 @Table(name = "users")
+@Data
 public class User {
     
     @Id
