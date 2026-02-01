@@ -1,11 +1,11 @@
-package com.usuarios;
+package com.example.demo;
 
-import com.usuarios.application.dto.CreateUserDTO;
-import com.usuarios.application.service.UserService;
-import com.usuarios.entity.User;
-import com.usuarios.bd.InMemoryUserRepository;
 import java.util.List;
 import java.util.Scanner;
+
+import com.example.demo.usuarios.CreateUserDTO;
+import com.example.demo.usuarios.User;
+import com.example.demo.usuarios.UserService;
 
 public class Main {
     public static void main(String[] args) {

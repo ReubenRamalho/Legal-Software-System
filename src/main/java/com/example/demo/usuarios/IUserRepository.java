@@ -1,4 +1,4 @@
-package com.usuarios.entity;
+package com.example.demo.usuarios;
 
 import java.util.List;
 import java.util.Optional;

@@ -1,8 +1,5 @@
-package com.usuarios.application.service;
+package com.example.demo.usuarios;
 
-import com.usuarios.application.dto.CreateUserDTO;
-import com.usuarios.entity.IUserRepository;
-import com.usuarios.entity.User;
 import java.util.List;
 
 public class UserService {

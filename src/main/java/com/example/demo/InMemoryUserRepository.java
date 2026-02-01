@@ -1,10 +1,11 @@
-package com.usuarios.bd;
+package com.example.demo;
 
-import com.usuarios.entity.IUserRepository;
-import com.usuarios.entity.User;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import com.example.demo.usuarios.IUserRepository;
+import com.example.demo.usuarios.User;
 
 public class InMemoryUserRepository implements IUserRepository {
     private final List<User> users = new ArrayList<>();

@@ -1,4 +1,4 @@
-package com.usuarios.application.dto;
+package com.example.demo.usuarios;
 
 public class CreateUserDTO {
     private final String name;
