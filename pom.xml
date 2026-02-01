@@ -96,6 +96,26 @@
 					</excludes>
 				</configuration>
 			</plugin>
+		<plugin>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-maven-plugin</artifactId>
+			<version>11.7.2</version>
+			<configuration>
+				<url>jdbc:postgresql://localhost:5432/db_mps</url>
+				<user>user</user>
+				<password>password</password>
+				<locations>
+					<location>filesystem:src/main/resources/db/migration</location>
+				</locations>
+			</configuration>
+			<dependencies>
+				<dependency>
+					<groupId>org.flywaydb</groupId>
+					<artifactId>flyway-database-postgresql</artifactId>
+					<version>11.7.2</version>
+				</dependency>
+			</dependencies>
+		</plugin>
 		</plugins>
 	</build>
 
