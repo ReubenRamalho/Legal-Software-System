@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import com.example.demo.usuarios.CreateUserDTO;
 import com.example.demo.usuarios.User;
 import com.example.demo.usuarios.UserService;
+import com.example.demo.usuarios.UserRepository;
 
 @SpringBootApplication
 public class DemoApplication {
