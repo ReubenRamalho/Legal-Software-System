@@ -24,7 +24,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 @Entity
 @Table(name = "processes")
 @Data
-public class Processo {
+public class Process {
 
     @Id
     private String id;
@@ -59,10 +59,10 @@ public class Processo {
     @JoinTable(name = "processes_users", joinColumns = @JoinColumn(name = "process_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
     private List<User> lawyers = new ArrayList<>();
 
-    protected Processo() {
+    protected Process() {
     }
 
-    public Processo(String numberCnj, String title, String description, String clientName,
+    public Process(String numberCnj, String title, String description, String clientName,
             String court, String district) {
         this.id = UUID.randomUUID().toString();
         this.numberCnj = Objects.requireNonNull(numberCnj, "Número CNJ não pode ser nulo");
