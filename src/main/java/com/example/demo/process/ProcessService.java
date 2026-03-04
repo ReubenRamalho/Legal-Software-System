@@ -1,5 +1,6 @@
 package com.example.demo.process;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.usuarios.UserRepository;
@@ -7,13 +8,10 @@ import com.example.demo.usuarios.UserRepository;
 @Service
 public class ProcessService {
 
-    private final ProcessRepository processoRepository;
-    private final UserRepository userRepository;
-
-    public ProcessService(ProcessRepository processoRepository, UserRepository userRepository) {
-        this.processoRepository = processoRepository;
-        this.userRepository = userRepository;
-    }
+    @Autowired
+    private ProcessRepository processoRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     public int countProcesses() {
         return (int) processoRepository.count();
