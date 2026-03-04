@@ -1,9 +1,9 @@
-package com.example.demo.process;
+package com.example.legal_system.process;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.usuarios.UserRepository;
+import com.example.legal_system.usuarios.UserRepository;
 
 @Service
 public class ProcessService {

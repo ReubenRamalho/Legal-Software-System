@@ -1,4 +1,4 @@
-package com.example.demo.process;
+package com.example.legal_system.process;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-import com.example.demo.usuarios.User;
+import com.example.legal_system.usuarios.User;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

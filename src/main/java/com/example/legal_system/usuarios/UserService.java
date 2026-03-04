@@ -1,4 +1,4 @@
-package com.example.demo.usuarios;
+package com.example.legal_system.usuarios;
 
 import java.util.List;
 import java.util.regex.Pattern;
@@ -12,24 +12,29 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    public void createUser(CreateUserDTO dto) {
+    public void create(CreateUserDTO dto) {
 
         validarLogin(dto.login());
         validarEmail(dto.email());
         validarSenha(dto.senha(), dto.login(), dto.email());
 
         User user = new User(
-            dto.name(),
-            dto.email(),
-            dto.type(),
-            dto.login(),
-            dto.senha());
+                dto.name(),
+                dto.email(),
+                dto.type(),
+                dto.login(),
+                dto.senha());
 
         userRepository.save(user);
     }
 
-    public List<User> listAllUsers() {
-        return userRepository.findAll();
+    public List<UserDTO> findAll() {
+        return userRepository.findAll().stream()
+                .map(user -> new UserDTO(
+                        user.getId(),
+                        user.getName(),
+                        user.getType()))
+                .collect(java.util.stream.Collectors.toList());
     }
 
     public int countUsers() {
@@ -63,34 +68,34 @@ public class UserService {
 
         if (senha.length() < 8 || senha.length() > 128) {
             throw new IllegalArgumentException(
-                "Senha deve ter entre 8 e 128 caracteres"
-            );
+                    "Senha deve ter entre 8 e 128 caracteres");
         }
 
         if (senha.equals(login)) {
             throw new IllegalArgumentException(
-                "Senha não pode ser igual ao login"
-            );
+                    "Senha não pode ser igual ao login");
         }
 
         if (senha.equals(email)) {
             throw new IllegalArgumentException(
-                "Senha não pode ser igual ao email"
-            );
+                    "Senha não pode ser igual ao email");
         }
 
         int tiposAtendidos = 0;
 
-        if (Pattern.compile("[A-Z]").matcher(senha).find()) tiposAtendidos++;
-        if (Pattern.compile("[a-z]").matcher(senha).find()) tiposAtendidos++;
-        if (Pattern.compile("[0-9]").matcher(senha).find()) tiposAtendidos++;
-        if (Pattern.compile("[^a-zA-Z0-9]").matcher(senha).find()) tiposAtendidos++;
+        if (Pattern.compile("[A-Z]").matcher(senha).find())
+            tiposAtendidos++;
+        if (Pattern.compile("[a-z]").matcher(senha).find())
+            tiposAtendidos++;
+        if (Pattern.compile("[0-9]").matcher(senha).find())
+            tiposAtendidos++;
+        if (Pattern.compile("[^a-zA-Z0-9]").matcher(senha).find())
+            tiposAtendidos++;
 
         if (tiposAtendidos < 3) {
             throw new IllegalArgumentException(
-                "Senha deve conter ao menos 3 dos seguintes tipos: " +
-                "maiúsculas, minúsculas, números e caracteres especiais"
-            );
+                    "Senha deve conter ao menos 3 dos seguintes tipos: " +
+                            "maiúsculas, minúsculas, números e caracteres especiais");
         }
     }
 }

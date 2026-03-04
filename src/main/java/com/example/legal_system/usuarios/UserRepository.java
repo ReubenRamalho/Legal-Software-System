@@ -1,4 +1,4 @@
-package com.example.demo.usuarios;
+package com.example.legal_system.usuarios;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

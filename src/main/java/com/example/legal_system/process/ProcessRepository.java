@@ -1,4 +1,4 @@
-package com.example.demo.process;
+package com.example.legal_system.process;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

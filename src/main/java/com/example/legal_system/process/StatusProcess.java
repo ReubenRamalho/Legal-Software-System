@@ -1,4 +1,4 @@
-package com.example.demo.process;
+package com.example.legal_system.process;
 
 public enum StatusProcess {
     ACTIVE,
