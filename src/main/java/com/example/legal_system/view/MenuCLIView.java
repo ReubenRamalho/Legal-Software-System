@@ -85,9 +85,9 @@ public class MenuCLIView {
         try {
             CreateUserDTO dto = new CreateUserDTO(nome, email, tipo, login, senha);
             facade.createUser(dto);
-            System.out.println("✓ Usuário criado com sucesso!");
+            System.out.println("[OK] Usuário criado com sucesso!");
         } catch (Exception e) {
-            System.out.println("✗ Erro ao criar usuário: " + e.getMessage());
+            System.out.println("[ERROR] Erro ao criar usuário: " + e.getMessage());
         }
     }
 
@@ -120,9 +120,9 @@ public class MenuCLIView {
         try {
             CreateProcessDTO dto = new CreateProcessDTO(cnj, titulo, desc, cliente, vara, distrito, advogadosIds);
             facade.createProcess(dto);
-            System.out.println(";) Processo criado com sucesso!");
+            System.out.println("[OK] Processo criado com sucesso!");
         } catch (Exception e) {
-            System.out.println("=( Erro ao criar processo: " + e.getMessage());
+            System.out.println("[ERROR] Erro ao criar processo: " + e.getMessage());
         }
     }
 
@@ -138,7 +138,7 @@ public class MenuCLIView {
                 }
             }
         } catch (Exception e) {
-            System.out.println("✗ Erro ao listar usuários: " + e.getMessage());
+            System.out.println("[ERROR] Erro ao listar usuários: " + e.getMessage());
         }
     }
 
@@ -148,7 +148,7 @@ public class MenuCLIView {
             int total = facade.countTotalEntities();
             System.out.println("Total de entidades (Usuários + Processos) registradas no banco: " + total);
         } catch (Exception e) {
-            System.out.println("✗ Erro ao contar entidades: " + e.getMessage());
+            System.out.println("[ERROR] Erro ao contar entidades: " + e.getMessage());
         }
     }
 }
