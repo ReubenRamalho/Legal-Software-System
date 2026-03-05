@@ -86,7 +86,7 @@ public class MenuCLIView {
             CreateUserDTO dto = new CreateUserDTO(nome, email, tipo, login, password);
             facade.createUser(dto);
             System.out.println("[OK] Usuário criado com sucesso!");
-        } catch (Exception e) {
+        } catch (IllegalArgumentException e) {
             System.out.println("[ERROR] Erro ao criar usuário: " + e.getMessage());
         }
     }
@@ -121,7 +121,7 @@ public class MenuCLIView {
             CreateProcessDTO dto = new CreateProcessDTO(cnj, titulo, desc, cliente, vara, distrito, advogadosIds);
             facade.createProcess(dto);
             System.out.println("[OK] Processo criado com sucesso!");
-        } catch (Exception e) {
+        } catch (IllegalArgumentException e) {
             System.out.println("[ERROR] Erro ao criar processo: " + e.getMessage());
         }
     }

@@ -18,6 +18,14 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    // Password validation constants
+    private static final int MIN_PASSWORD_LENGTH = 8;
+    private static final int MAX_PASSWORD_LENGTH = 128;
+    private static final int MIN_REQUIRED_COMPLEXITY_TYPES = 3;
+
+    // Login validation constants
+    private static final int MAX_LOGIN_LENGTH = 12;
+
     public void create(CreateUserDTO dto) {
 
         validateLogin(dto.login());
@@ -52,7 +60,7 @@ public class UserService {
             throw new IllegalArgumentException("Login não pode ser vazio");
         }
 
-        if (login.length() > 12) {
+        if (login.length() > MAX_LOGIN_LENGTH) {
             throw new IllegalArgumentException("Login deve ter no máximo 12 caracteres");
         }
 
@@ -72,7 +80,7 @@ public class UserService {
             throw new IllegalArgumentException("Senha não pode ser vazia");
         }
 
-        if (password.length() < 8 || password.length() > 128) {
+        if (password.length() < MIN_PASSWORD_LENGTH || password.length() > MAX_PASSWORD_LENGTH) {
             throw new IllegalArgumentException(
                     "Senha deve ter entre 8 e 128 caracteres");
         }
@@ -98,7 +106,7 @@ public class UserService {
         if (Pattern.compile("[^a-zA-Z0-9]").matcher(password).find())
             tiposAtendidos++;
 
-        if (tiposAtendidos < 3) {
+        if (tiposAtendidos < MIN_REQUIRED_COMPLEXITY_TYPES) {
             throw new IllegalArgumentException(
                     "Senha deve conter ao menos 3 dos seguintes tipos: " +
                             "maiúsculas, minúsculas, números e caracteres especiais");
