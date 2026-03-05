@@ -1,4 +1,4 @@
-package com.example.legal_system.process;
+package com.example.legal_system.dto;
 
 import java.util.List;
 

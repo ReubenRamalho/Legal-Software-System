@@ -4,10 +4,10 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import com.example.legal_system.process.CreateProcessDTO;
+import com.example.legal_system.dto.CreateProcessDTO;
+import com.example.legal_system.dto.CreateUserDTO;
+import com.example.legal_system.dto.UserDTO;
 import com.example.legal_system.service.ProcessService;
-import com.example.legal_system.usuarios.CreateUserDTO;
-import com.example.legal_system.usuarios.UserDTO;
 import com.example.legal_system.service.UserService;
 
 @Component

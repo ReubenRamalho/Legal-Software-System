@@ -6,10 +6,11 @@ import java.util.regex.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.legal_system.usuarios.CreateUserDTO;
-import com.example.legal_system.usuarios.User;
-import com.example.legal_system.usuarios.UserDTO;
-import com.example.legal_system.usuarios.UserRepository;
+import com.example.legal_system.dto.CreateUserDTO;
+import com.example.legal_system.dto.UserDTO;
+import com.example.legal_system.model.User;
+import com.example.legal_system.repository.UserRepository;
+
 
 @Service
 public class UserService {

@@ -7,9 +7,9 @@ import java.util.Scanner;
 import org.springframework.stereotype.Component;
 
 import com.example.legal_system.controller.FacadeSingletonController;
-import com.example.legal_system.process.CreateProcessDTO;
-import com.example.legal_system.usuarios.CreateUserDTO;
-import com.example.legal_system.usuarios.UserDTO;
+import com.example.legal_system.dto.CreateProcessDTO;
+import com.example.legal_system.dto.CreateUserDTO;
+import com.example.legal_system.dto.UserDTO;
 
 @Component
 public class MenuCLIView {

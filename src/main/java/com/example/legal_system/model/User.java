@@ -1,4 +1,4 @@
-package com.example.legal_system.usuarios;
+package com.example.legal_system.model;
 import lombok.Data;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

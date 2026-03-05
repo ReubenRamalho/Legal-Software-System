@@ -1,4 +1,4 @@
-package com.example.legal_system.usuarios;
+package com.example.legal_system.dto;
 
 public record CreateUserDTO(
     String name,

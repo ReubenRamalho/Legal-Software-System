@@ -3,10 +3,10 @@ package com.example.legal_system.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.legal_system.process.CreateProcessDTO;
-import com.example.legal_system.process.Process;
-import com.example.legal_system.process.ProcessRepository;
-import com.example.legal_system.usuarios.UserRepository;
+import com.example.legal_system.dto.CreateProcessDTO;
+import com.example.legal_system.model.Process;
+import com.example.legal_system.repository.ProcessRepository;
+import com.example.legal_system.repository.UserRepository;
 
 @Service
 public class ProcessService {
