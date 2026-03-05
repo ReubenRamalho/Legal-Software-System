@@ -110,7 +110,7 @@ Cria um novo usuário no sistema com validações obrigatórias.
 **Validações:**
 - **Nome**: Nome completo do usuário
 - **Email**: Campo obrigatório (qualquer formato não-vazio)
-- **Tipo**: Categoria do usuário (ex: "admin", "advogado")
+- **Tipo**: Categoria do usuário (um dos valores: "Sócio-Administrador", "Sócio", "Advogado", "Estagiário")
 - **Login**: Identificador único do usuário
 - **Senha**: 8-128 caracteres, deve conter **pelo menos 3 dos 4 tipos**:
   - Letras maiúsculas (A-Z)
@@ -125,7 +125,7 @@ Escolha uma opção: 1
 --- Novo Usuário ---
 Nome: Ana Carolina Mendes
 Email: ana.mendes@advocacia.com.br
-Tipo (ex: admin, advogado): advogado
+Tipo (Sócio-Administrador, Sócio, Advogado, Estagiário): Advogado
 Login: anacarol
 Senha: Justiça@2026
 [OK] Usuário criado com sucesso!
@@ -173,9 +173,9 @@ Exibe uma lista com todos os usuários cadastrados no sistema.
 Escolha uma opção: 3
 
 --- Lista de Usuários ---
-- 9f3dc492-a867-41f5-a137-9619be49d4a2: Carlos Pereira (Tipo: admin)
-- 535a027c-b3ee-40e1-bd6f-a4845e7caea4: Mariana Costa (Tipo: admin)
-- 1c7bf4cb-4a87-4748-9f9f-d9a736e5e6b4: Ana Carolina Mendes (Tipo: advogado)
+- 9f3dc492-a867-41f5-a137-9619be49d4a2: Carlos Pereira (Tipo: Sócio-Administrador)
+- 535a027c-b3ee-40e1-bd6f-a4845e7caea4: Mariana Costa (Tipo: Sócio)
+- 1c7bf4cb-4a87-4748-9f9f-d9a736e5e6b4: Ana Carolina Mendes (Tipo: Advogado)
 ```
 
 ### Opção 4: Contar Total de Entidades

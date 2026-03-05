@@ -5,6 +5,8 @@ import java.util.regex.Pattern;
 import org.springframework.stereotype.Component;
 
 import com.example.legal_system.dto.CreateUserDTO;
+import com.example.legal_system.enums.UserType;
+import com.example.legal_system.repository.UserRepository;
 
 @Component
 public class UserValidatorService {
@@ -13,11 +15,28 @@ public class UserValidatorService {
     private static final int MAX_PASSWORD_LENGTH = 128;
     private static final int MIN_REQUIRED_COMPLEXITY_TYPES = 3;
     private static final int MAX_LOGIN_LENGTH = 12;
+    private final UserRepository userRepository;
+
+    public UserValidatorService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     public void validateCreateUser(CreateUserDTO dto) {
         validateLogin(dto.login());
+        validateLoginAvailable(dto.login());
         validateEmail(dto.email());
+        validateType(dto.type());
         validatePassword(dto.password(), dto.login(), dto.email());
+    }
+
+    private void validateLoginAvailable(String login) {
+        if (userRepository.existsByLogin(login)) {
+            throw new IllegalArgumentException("Login já está em uso");
+        }
+    }
+
+    private void validateType(String type) {
+        UserType.fromInput(type);
     }
 
     private void validateLogin(String login) {

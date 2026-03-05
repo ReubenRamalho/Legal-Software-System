@@ -7,4 +7,5 @@ import com.example.legal_system.model.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, String> {   
+	boolean existsByLogin(String login);
 }

@@ -73,7 +73,7 @@ public class MenuCLIView {
         System.out.print("Email: ");
         String email = scanner.nextLine();
 
-        System.out.print("Tipo (ex: admin, advogado): ");
+        System.out.print("Tipo (Sócio-Administrador, Sócio, Advogado, Estagiário): ");
         String tipo = scanner.nextLine();
 
         System.out.print("Login: ");
