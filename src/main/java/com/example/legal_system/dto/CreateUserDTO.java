@@ -5,6 +5,6 @@ public record CreateUserDTO(
     String email,
     String type,
     String login,
-    String senha
+    String password
 ) {
 }

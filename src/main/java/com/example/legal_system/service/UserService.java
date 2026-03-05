@@ -20,16 +20,16 @@ public class UserService {
 
     public void create(CreateUserDTO dto) {
 
-        validarLogin(dto.login());
-        validarEmail(dto.email());
-        validarSenha(dto.senha(), dto.login(), dto.email());
+        validateLogin(dto.login());
+        validateEmail(dto.email());
+        validatePassword(dto.password(), dto.login(), dto.email());
 
         User user = new User(
                 dto.name(),
                 dto.email(),
                 dto.type(),
                 dto.login(),
-                dto.senha());
+                dto.password());
 
         userRepository.save(user);
     }
@@ -47,7 +47,7 @@ public class UserService {
         return (int) userRepository.count();
     }
 
-    private void validarLogin(String login) {
+    private void validateLogin(String login) {
         if (login == null || login.trim().isEmpty()) {
             throw new IllegalArgumentException("Login não pode ser vazio");
         }
@@ -61,41 +61,41 @@ public class UserService {
         }
     }
 
-    private void validarEmail(String email) {
+    private void validateEmail(String email) {
         if (email == null || email.trim().isEmpty()) {
             throw new IllegalArgumentException("Email não pode ser vazio");
         }
     }
 
-    private void validarSenha(String senha, String login, String email) {
-        if (senha == null || senha.isEmpty()) {
+    private void validatePassword(String password, String login, String email) {
+        if (password == null || password.isEmpty()) {
             throw new IllegalArgumentException("Senha não pode ser vazia");
         }
 
-        if (senha.length() < 8 || senha.length() > 128) {
+        if (password.length() < 8 || password.length() > 128) {
             throw new IllegalArgumentException(
                     "Senha deve ter entre 8 e 128 caracteres");
         }
 
-        if (senha.equals(login)) {
+        if (password.equals(login)) {
             throw new IllegalArgumentException(
                     "Senha não pode ser igual ao login");
         }
 
-        if (senha.equals(email)) {
+        if (password.equals(email)) {
             throw new IllegalArgumentException(
                     "Senha não pode ser igual ao email");
         }
 
         int tiposAtendidos = 0;
 
-        if (Pattern.compile("[A-Z]").matcher(senha).find())
+        if (Pattern.compile("[A-Z]").matcher(password).find())
             tiposAtendidos++;
-        if (Pattern.compile("[a-z]").matcher(senha).find())
+        if (Pattern.compile("[a-z]").matcher(password).find())
             tiposAtendidos++;
-        if (Pattern.compile("[0-9]").matcher(senha).find())
+        if (Pattern.compile("[0-9]").matcher(password).find())
             tiposAtendidos++;
-        if (Pattern.compile("[^a-zA-Z0-9]").matcher(senha).find())
+        if (Pattern.compile("[^a-zA-Z0-9]").matcher(password).find())
             tiposAtendidos++;
 
         if (tiposAtendidos < 3) {

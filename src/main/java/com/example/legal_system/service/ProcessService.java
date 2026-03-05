@@ -12,12 +12,12 @@ import com.example.legal_system.repository.UserRepository;
 public class ProcessService {
 
     @Autowired
-    private ProcessRepository processoRepository;
+    private ProcessRepository processRepository;
     @Autowired
     private UserRepository userRepository;
 
     public int countProcesses() {
-        return (int) processoRepository.count();
+        return (int) processRepository.count();
     }
 
     public void create(CreateProcessDTO dto) {
@@ -36,6 +36,6 @@ public class ProcessService {
             }
         }
         
-        processoRepository.save(processo);
+        processRepository.save(processo);
     }
 }

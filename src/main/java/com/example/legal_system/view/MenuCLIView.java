@@ -41,16 +41,16 @@ public class MenuCLIView {
 
             switch (option) {
                 case "1":
-                    criarUsuario(scanner);
+                    createUser(scanner);
                     break;
                 case "2":
-                    criarProcesso(scanner);
+                    createProcess(scanner);
                     break;
                 case "3":
-                    listarUsuarios();
+                    listUsers();
                     break;
                 case "4":
-                    contarEntidades();
+                    countEntities();
                     break;
                 case "5":
                     System.out.println("\nEncerrando o sistema. Até logo!");
@@ -65,7 +65,7 @@ public class MenuCLIView {
         System.exit(0);
     }
 
-    private void criarUsuario(Scanner scanner) {
+    private void createUser(Scanner scanner) {
         System.out.println("\n--- Novo Usuário ---");
         System.out.print("Nome: ");
         String nome = scanner.nextLine();
@@ -80,10 +80,10 @@ public class MenuCLIView {
         String login = scanner.nextLine();
 
         System.out.print("Senha: ");
-        String senha = scanner.nextLine();
+        String password = scanner.nextLine();
 
         try {
-            CreateUserDTO dto = new CreateUserDTO(nome, email, tipo, login, senha);
+            CreateUserDTO dto = new CreateUserDTO(nome, email, tipo, login, password);
             facade.createUser(dto);
             System.out.println("[OK] Usuário criado com sucesso!");
         } catch (Exception e) {
@@ -91,7 +91,7 @@ public class MenuCLIView {
         }
     }
 
-    private void criarProcesso(Scanner scanner) {
+    private void createProcess(Scanner scanner) {
         System.out.println("\n--- Novo Processo ---");
         System.out.print("Número CNJ: ");
         String cnj = scanner.nextLine();
@@ -126,7 +126,7 @@ public class MenuCLIView {
         }
     }
 
-    private void listarUsuarios() {
+    private void listUsers() {
         System.out.println("\n--- Lista de Usuários ---");
         try {
             List<UserDTO> users = facade.findAllUsers();
@@ -142,7 +142,7 @@ public class MenuCLIView {
         }
     }
 
-    private void contarEntidades() {
+    private void countEntities() {
         System.out.println("\n--- Contagem de Entidades ---");
         try {
             int total = facade.countTotalEntities();
