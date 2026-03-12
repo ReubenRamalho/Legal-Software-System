@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import com.example.legal_system.controller.FacadeSingletonController;
 import com.example.legal_system.dto.CreateProcessDTO;
 import com.example.legal_system.dto.CreateUserDTO;
+import com.example.legal_system.dto.UpdateUserDTO;
 import com.example.legal_system.dto.UserDTO;
 
 @Component
@@ -33,8 +34,11 @@ public class MenuCLIView {
             System.out.println("1. Criar Usuário");
             System.out.println("2. Criar Processo");
             System.out.println("3. Listar Todos os Usuários");
-            System.out.println("4. Contar Total de Entidades");
-            System.out.println("5. Sair");
+            System.out.println("4. Buscar Usuário por ID");
+            System.out.println("5. Atualizar Usuário");
+            System.out.println("6. Remover Usuário");
+            System.out.println("7. Contar Total de Entidades");
+            System.out.println("8. Sair");
             System.out.print("Escolha uma opção: ");
 
             String option = scanner.nextLine().trim();
@@ -50,9 +54,18 @@ public class MenuCLIView {
                     listUsers();
                     break;
                 case "4":
-                    countEntities();
+                    findOneUser(scanner);
                     break;
                 case "5":
+                    updateUser(scanner);
+                    break;
+                case "6":
+                    removeUser(scanner);
+                    break;
+                case "7":
+                    countEntities();
+                    break;
+                case "8":
                     System.out.println("\nEncerrando o sistema. Até logo!");
                     running = false;
                     break;
@@ -139,6 +152,64 @@ public class MenuCLIView {
             }
         } catch (Exception e) {
             System.out.println("[ERROR] Erro ao listar usuários: " + e.getMessage());
+        }
+    }
+
+    private void findOneUser(Scanner scanner) {
+        System.out.println("\n--- Buscar Usuário por ID ---");
+        System.out.print("ID do usuário: ");
+        String id = scanner.nextLine().trim();
+
+        try {
+            UserDTO user = facade.findOneUser(id);
+            System.out.println("Usuário encontrado:");
+            System.out.println("- ID: " + user.id());
+            System.out.println("- Nome: " + user.name());
+            System.out.println("- Tipo: " + user.type());
+        } catch (IllegalArgumentException e) {
+            System.out.println("[ERROR] Erro ao buscar usuário: " + e.getMessage());
+        }
+    }
+
+    private void updateUser(Scanner scanner) {
+        System.out.println("\n--- Atualizar Usuário ---");
+        System.out.print("ID do usuário: ");
+        String id = scanner.nextLine().trim();
+
+        System.out.print("Novo nome: ");
+        String nome = scanner.nextLine();
+
+        System.out.print("Novo email: ");
+        String email = scanner.nextLine();
+
+        System.out.print("Novo tipo (Sócio-Administrador, Sócio, Advogado, Estagiário): ");
+        String tipo = scanner.nextLine();
+
+        System.out.print("Novo login: ");
+        String login = scanner.nextLine();
+
+        System.out.print("Nova senha: ");
+        String password = scanner.nextLine();
+
+        try {
+            UpdateUserDTO dto = new UpdateUserDTO(nome, email, tipo, login, password);
+            facade.updateUser(id, dto);
+            System.out.println("[OK] Usuário atualizado com sucesso!");
+        } catch (IllegalArgumentException e) {
+            System.out.println("[ERROR] Erro ao atualizar usuário: " + e.getMessage());
+        }
+    }
+
+    private void removeUser(Scanner scanner) {
+        System.out.println("\n--- Remover Usuário ---");
+        System.out.print("ID do usuário: ");
+        String id = scanner.nextLine().trim();
+
+        try {
+            facade.removeUser(id);
+            System.out.println("[OK] Usuário removido com sucesso!");
+        } catch (IllegalArgumentException e) {
+            System.out.println("[ERROR] Erro ao remover usuário: " + e.getMessage());
         }
     }
 

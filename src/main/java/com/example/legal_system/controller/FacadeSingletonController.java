@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import com.example.legal_system.dto.CreateProcessDTO;
 import com.example.legal_system.dto.CreateUserDTO;
+import com.example.legal_system.dto.UpdateUserDTO;
 import com.example.legal_system.dto.UserDTO;
 import com.example.legal_system.service.ProcessService;
 import com.example.legal_system.service.UserService;
@@ -31,6 +32,18 @@ public class FacadeSingletonController {
 
     public List<UserDTO> findAllUsers() {
         return userService.findAll();
+    }
+
+    public UserDTO findOneUser(String id) {
+        return userService.findOne(id);
+    }
+
+    public void updateUser(String id, UpdateUserDTO dto) {
+        userService.update(id, dto);
+    }
+
+    public void removeUser(String id) {
+        userService.remove(id);
     }
 
     public void createProcess(CreateProcessDTO dto) {

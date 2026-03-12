@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 import org.springframework.stereotype.Component;
 
 import com.example.legal_system.dto.CreateUserDTO;
+import com.example.legal_system.dto.UpdateUserDTO;
 import com.example.legal_system.enums.UserType;
 import com.example.legal_system.repository.UserRepository;
 
@@ -29,8 +30,22 @@ public class UserValidatorService {
         validatePassword(dto.password(), dto.login(), dto.email());
     }
 
+    public void validateUpdateUser(String userId, UpdateUserDTO dto) {
+        validateLogin(dto.login());
+        validateLoginAvailableForUpdate(userId, dto.login());
+        validateEmail(dto.email());
+        validateType(dto.type());
+        validatePassword(dto.password(), dto.login(), dto.email());
+    }
+
     private void validateLoginAvailable(String login) {
         if (userRepository.existsByLogin(login)) {
+            throw new IllegalArgumentException("Login já está em uso");
+        }
+    }
+
+    private void validateLoginAvailableForUpdate(String userId, String login) {
+        if (userRepository.existsByLoginAndIdNot(login, userId)) {
             throw new IllegalArgumentException("Login já está em uso");
         }
     }
