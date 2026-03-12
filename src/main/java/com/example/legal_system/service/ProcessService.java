@@ -2,6 +2,7 @@ package com.example.legal_system.service;
 
 import org.springframework.stereotype.Service;
 
+import com.example.legal_system.domain.ILogger;
 import com.example.legal_system.domain.IProcessRepository;
 import com.example.legal_system.domain.IUserRepository;
 import com.example.legal_system.domain.RepositoryFactory;
@@ -13,10 +14,12 @@ public class ProcessService {
 
     private final IProcessRepository processRepository;
     private final IUserRepository userRepository;
+    private final ILogger logger;
 
-    public ProcessService(RepositoryFactory repositoryFactory) {
+    public ProcessService(RepositoryFactory repositoryFactory, ILogger logger) {
         this.processRepository = repositoryFactory.getProcessRepository();
         this.userRepository = repositoryFactory.getUserRepository();
+        this.logger = logger;
     }
 
     public int countProcesses() {
@@ -40,5 +43,6 @@ public class ProcessService {
         }
         
         processRepository.save(processo);
+        logger.info("Processo criado com sucesso. CNJ: " + processo.getNumberCnj());
     }
 }

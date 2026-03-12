@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import com.example.legal_system.domain.ILogger;
 import com.example.legal_system.domain.IUserRepository;
 import com.example.legal_system.domain.RepositoryFactory;
 import com.example.legal_system.dto.CreateUserDTO;
@@ -18,10 +19,15 @@ public class UserService {
 
     private final IUserRepository userRepository;
     private final UserValidatorService userValidatorService;
+    private final ILogger logger;
 
-    public UserService(RepositoryFactory repositoryFactory, UserValidatorService userValidatorService) {
+    public UserService(
+            RepositoryFactory repositoryFactory,
+            UserValidatorService userValidatorService,
+            ILogger logger) {
         this.userRepository = repositoryFactory.getUserRepository();
         this.userValidatorService = userValidatorService;
+        this.logger = logger;
     }
 
     public void create(CreateUserDTO dto) {
@@ -38,8 +44,10 @@ public class UserService {
 
         try {
             userRepository.save(user);
+            logger.info("Usuário criado com sucesso. Login: " + user.getLogin());
         } catch (DataIntegrityViolationException e) {
             if (e.getMessage() != null && e.getMessage().contains("users_login_key")) {
+                logger.error("Falha ao criar usuário: login já está em uso. Login: " + dto.login(), e);
                 throw new IllegalArgumentException("Login já está em uso");
             }
             throw e;
@@ -54,14 +62,22 @@ public class UserService {
 
     public UserDTO findOne(String id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
+                .orElseThrow(() -> {
+                    logger.warn("Consulta de usuário falhou: usuário não encontrado. ID: " + id);
+                    return new IllegalArgumentException("Usuário não encontrado");
+                });
+
+        logger.info("Usuário consultado com sucesso. ID: " + id);
 
         return toDTO(user);
     }
 
     public void update(String id, UpdateUserDTO dto) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
+                .orElseThrow(() -> {
+                    logger.warn("Atualização de usuário falhou: usuário não encontrado. ID: " + id);
+                    return new IllegalArgumentException("Usuário não encontrado");
+                });
         UpdateUserDTO normalizedDto = dto.normalized();
 
         userValidatorService.validateUpdateUser(id, normalizedDto);
@@ -95,8 +111,10 @@ public class UserService {
 
         try {
             userRepository.save(user);
+            logger.info("Usuário atualizado com sucesso. ID: " + id);
         } catch (DataIntegrityViolationException e) {
             if (e.getMessage() != null && e.getMessage().contains("users_login_key")) {
+                logger.error("Falha ao atualizar usuário: login já está em uso. ID: " + id, e);
                 throw new IllegalArgumentException("Login já está em uso");
             }
             throw e;
@@ -105,10 +123,12 @@ public class UserService {
 
     public void remove(String id) {
         if (userRepository.findById(id).isEmpty()) {
+            logger.warn("Remoção de usuário falhou: usuário não encontrado. ID: " + id);
             throw new IllegalArgumentException("Usuário não encontrado");
         }
 
         userRepository.deleteById(id);
+        logger.info("Usuário removido com sucesso. ID: " + id);
     }
 
     public int countUsers() {
