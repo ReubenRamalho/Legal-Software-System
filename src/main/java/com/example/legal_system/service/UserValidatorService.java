@@ -4,10 +4,11 @@ import java.util.regex.Pattern;
 
 import org.springframework.stereotype.Component;
 
+import com.example.legal_system.domain.IUserRepository;
+import com.example.legal_system.domain.RepositoryFactory;
 import com.example.legal_system.dto.CreateUserDTO;
 import com.example.legal_system.dto.UpdateUserDTO;
 import com.example.legal_system.enums.UserType;
-import com.example.legal_system.repository.UserRepository;
 
 @Component
 public class UserValidatorService {
@@ -16,10 +17,10 @@ public class UserValidatorService {
     private static final int MAX_PASSWORD_LENGTH = 128;
     private static final int MIN_REQUIRED_COMPLEXITY_TYPES = 3;
     private static final int MAX_LOGIN_LENGTH = 12;
-    private final UserRepository userRepository;
+    private final IUserRepository userRepository;
 
-    public UserValidatorService(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserValidatorService(RepositoryFactory repositoryFactory) {
+        this.userRepository = repositoryFactory.getUserRepository();
     }
 
     public void validateCreateUser(CreateUserDTO dto) {
@@ -31,11 +32,33 @@ public class UserValidatorService {
     }
 
     public void validateUpdateUser(String userId, UpdateUserDTO dto) {
-        validateLogin(dto.login());
-        validateLoginAvailableForUpdate(userId, dto.login());
-        validateEmail(dto.email());
-        validateType(dto.type());
-        validatePassword(dto.password(), dto.login(), dto.email());
+        UpdateUserDTO normalizedDto = dto.normalized();
+        String login = normalizedDto.login();
+        String email = normalizedDto.email();
+        String type = normalizedDto.type();
+        String password = normalizedDto.password();
+        var existingUser = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
+
+        if (login != null) {
+            validateLogin(login);
+            validateLoginAvailableForUpdate(userId, login);
+        }
+
+        if (email != null) {
+            validateEmail(email);
+        }
+
+        if (type != null) {
+            validateType(type);
+        }
+
+        if (password != null) {
+            String effectiveLogin = login != null ? login : existingUser.getLogin();
+            String effectiveEmail = email != null ? email : existingUser.getEmail();
+
+            validatePassword(password, effectiveLogin, effectiveEmail);
+        }
     }
 
     private void validateLoginAvailable(String login) {

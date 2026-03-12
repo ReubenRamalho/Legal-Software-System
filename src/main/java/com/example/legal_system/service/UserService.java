@@ -5,21 +5,22 @@ import java.util.List;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import com.example.legal_system.domain.IUserRepository;
+import com.example.legal_system.domain.RepositoryFactory;
 import com.example.legal_system.dto.CreateUserDTO;
 import com.example.legal_system.dto.UpdateUserDTO;
 import com.example.legal_system.dto.UserDTO;
 import com.example.legal_system.enums.UserType;
 import com.example.legal_system.model.User;
-import com.example.legal_system.repository.UserRepository;
 
 @Service
 public class UserService {
 
-    private final UserRepository userRepository;
+    private final IUserRepository userRepository;
     private final UserValidatorService userValidatorService;
 
-    public UserService(UserRepository userRepository, UserValidatorService userValidatorService) {
-        this.userRepository = userRepository;
+    public UserService(RepositoryFactory repositoryFactory, UserValidatorService userValidatorService) {
+        this.userRepository = repositoryFactory.getUserRepository();
         this.userValidatorService = userValidatorService;
     }
 
@@ -28,7 +29,7 @@ public class UserService {
 
         UserType userType = UserType.fromInput(dto.type());
 
-        User user = new User(
+        User user = User.create(
                 dto.name(),
                 dto.email(),
                 userType.getDisplayName(),
@@ -61,16 +62,36 @@ public class UserService {
     public void update(String id, UpdateUserDTO dto) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
+        UpdateUserDTO normalizedDto = dto.normalized();
 
-        userValidatorService.validateUpdateUser(id, dto);
+        userValidatorService.validateUpdateUser(id, normalizedDto);
 
-        UserType userType = UserType.fromInput(dto.type());
+        String name = normalizedDto.name();
+        String email = normalizedDto.email();
+        String type = normalizedDto.type();
+        String login = normalizedDto.login();
+        String password = normalizedDto.password();
 
-        user.setName(dto.name());
-        user.setEmail(dto.email());
-        user.setType(userType.getDisplayName());
-        user.setLogin(dto.login());
-        user.setPassword(dto.password());
+        if (name != null) {
+            user.setName(name);
+        }
+
+        if (email != null) {
+            user.setEmail(email);
+        }
+
+        if (type != null) {
+            UserType userType = UserType.fromInput(type);
+            user.setType(userType.getDisplayName());
+        }
+
+        if (login != null) {
+            user.setLogin(login);
+        }
+
+        if (password != null) {
+            user.setPassword(password);
+        }
 
         try {
             userRepository.save(user);
@@ -83,7 +104,7 @@ public class UserService {
     }
 
     public void remove(String id) {
-        if (!userRepository.existsById(id)) {
+        if (userRepository.findById(id).isEmpty()) {
             throw new IllegalArgumentException("Usuário não encontrado");
         }
 

@@ -7,4 +7,21 @@ public record UpdateUserDTO(
     String login,
     String password
 ) {
+    public UpdateUserDTO normalized() {
+        return new UpdateUserDTO(
+                normalize(name),
+                normalize(email),
+                normalize(type),
+                normalize(login),
+                normalize(password));
+    }
+
+    private static String normalize(String value) {
+        if (value == null) {
+            return null;
+        }
+
+        String trimmed = value.trim();
+        return trimmed.isEmpty() ? null : trimmed;
+    }
 }

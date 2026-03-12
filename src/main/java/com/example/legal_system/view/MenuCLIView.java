@@ -173,6 +173,7 @@ public class MenuCLIView {
 
     private void updateUser(Scanner scanner) {
         System.out.println("\n--- Atualizar Usuário ---");
+        System.out.println("(Deixe em branco para manter o valor atual)");
         System.out.print("ID do usuário: ");
         String id = scanner.nextLine().trim();
 
