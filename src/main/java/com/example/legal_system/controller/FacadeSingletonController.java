@@ -1,5 +1,6 @@
 package com.example.legal_system.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
@@ -8,6 +9,7 @@ import com.example.legal_system.dto.CreateProcessDTO;
 import com.example.legal_system.dto.CreateUserDTO;
 import com.example.legal_system.dto.UpdateUserDTO;
 import com.example.legal_system.dto.UserDTO;
+import com.example.legal_system.service.AccessReportService;
 import com.example.legal_system.service.ProcessService;
 import com.example.legal_system.service.UserService;
 
@@ -16,10 +18,12 @@ public class FacadeSingletonController {
 
     private final UserService userService;
     private final ProcessService processService;
+    private final AccessReportService accessReportService;
 
-    public FacadeSingletonController(UserService userService, ProcessService processService) {
+    public FacadeSingletonController(UserService userService, ProcessService processService, AccessReportService accessReportService) {
         this.userService = userService;
         this.processService = processService;
+        this.accessReportService = accessReportService;
     }
 
     public int countTotalEntities() {
@@ -48,5 +52,9 @@ public class FacadeSingletonController {
 
     public void createProcess(CreateProcessDTO dto) {
         processService.create(dto);
+    }
+
+    public String generateAccessReport(String format, LocalDate startDate, LocalDate endDate) {
+        return accessReportService.requestReport(format, startDate, endDate);
     }
 }

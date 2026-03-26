@@ -11,7 +11,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "acess")
+@Table(name = "access")
 @Getter
 @Setter
 public class Access {
