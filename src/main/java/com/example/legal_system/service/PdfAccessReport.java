@@ -1,18 +1,18 @@
 package com.example.legal_system.service;
 
 import org.springframework.stereotype.Component;
-import com.example.legal_system.domain.IAcessoRepository;
-import com.example.legal_system.dto.EstatisticasAcessoDTO;
+import com.example.legal_system.domain.IAccessRepository;
+import com.example.legal_system.dto.AccessStatisticsDTO;
 
 @Component("PDF")
-public class RelatorioAcessoPDF extends GeradorRelatorioTemplate {
+public class PdfAccessReport extends ReportGeneratorTemplate {
 
-    public RelatorioAcessoPDF(IAcessoRepository acessoRepository) {
+    public PdfAccessReport(IAccessRepository acessoRepository) {
         super(acessoRepository);
     }
 
     @Override
-    protected byte[] formatarSaida(EstatisticasAcessoDTO estatisticas) {
+    protected byte[] formatOutput(AccessStatisticsDTO estatisticas) {
         // Pseudocódigo utilizando bibliotecas como iTextPdf ou JasperReports
         /*
         Document document = new Document();
@@ -30,9 +30,9 @@ public class RelatorioAcessoPDF extends GeradorRelatorioTemplate {
     }
 
     @Override
-    protected String salvar(byte[] arquivoFinal) {
-        String caminho = "/reports/pdf/relatorio_" + System.currentTimeMillis() + ".pdf";
-        System.out.println("Salvando arquivo PDF em: " + caminho);
-        return caminho;
+    protected String save(byte[] formattedReport) {
+        String path = "/reports/pdf/relatorio_" + System.currentTimeMillis() + ".pdf";
+        System.out.println("Salvando arquivo PDF em: " + path);
+        return path;
     }
 }

@@ -5,5 +5,5 @@ public interface RepositoryFactory {
 
     IProcessRepository getProcessRepository();
 
-    IAcessoRepository getAcessoRepository();
+    IAccessRepository getAcessoRepository();
 }
