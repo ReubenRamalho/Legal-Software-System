@@ -3,8 +3,10 @@ package com.example.legal_system.model;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import com.example.legal_system.enums.StatusProcess;
 
@@ -17,13 +19,13 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
-import lombok.Data;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "processes")
-@Data
+@Getter
+@Setter
 public class Process {
 
     @Id
@@ -62,16 +64,21 @@ public class Process {
     protected Process() {
     }
 
-    public Process(String numberCnj, String title, String description, String clientName,
+    private Process(String numberCnj, String title, String description, String clientName,
             String court, String district) {
         this.id = UUID.randomUUID().toString();
-        this.numberCnj = Objects.requireNonNull(numberCnj, "Número CNJ não pode ser nulo");
-        this.title = Objects.requireNonNull(title, "Título não pode ser nulo");
+        this.numberCnj = numberCnj;
+        this.title = title;
         this.description = description;
-        this.clientName = Objects.requireNonNull(clientName, "Nome do cliente não pode ser nulo");
+        this.clientName = clientName;
         this.status = StatusProcess.ACTIVE;
         this.court = court;
         this.district = district;
+    }
+
+    public static Process create(String numberCnj, String title, String description, String clientName,
+            String court, String district) {
+        return new Process(numberCnj, title, description, clientName, court, district);
     }
 
     public void addLawyer(User lawyer) {

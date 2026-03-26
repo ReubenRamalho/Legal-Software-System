@@ -1,27 +1,33 @@
 package com.example.legal_system.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.legal_system.domain.ILogger;
+import com.example.legal_system.domain.IProcessRepository;
+import com.example.legal_system.domain.IUserRepository;
+import com.example.legal_system.domain.RepositoryFactory;
 import com.example.legal_system.dto.CreateProcessDTO;
 import com.example.legal_system.model.Process;
-import com.example.legal_system.repository.ProcessRepository;
-import com.example.legal_system.repository.UserRepository;
 
 @Service
 public class ProcessService {
 
-    @Autowired
-    private ProcessRepository processRepository;
-    @Autowired
-    private UserRepository userRepository;
+    private final IProcessRepository processRepository;
+    private final IUserRepository userRepository;
+    private final ILogger logger;
+
+    public ProcessService(RepositoryFactory repositoryFactory, ILogger logger) {
+        this.processRepository = repositoryFactory.getProcessRepository();
+        this.userRepository = repositoryFactory.getUserRepository();
+        this.logger = logger;
+    }
 
     public int countProcesses() {
         return (int) processRepository.count();
     }
 
     public void create(CreateProcessDTO dto) {
-        Process processo = new Process(
+        Process processo = Process.create(
             dto.numberCnj(),
             dto.title(),
             dto.description(),
@@ -37,5 +43,6 @@ public class ProcessService {
         }
         
         processRepository.save(processo);
+        logger.info("Processo criado com sucesso. CNJ: " + processo.getNumberCnj());
     }
 }
