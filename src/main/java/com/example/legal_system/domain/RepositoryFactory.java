@@ -4,4 +4,6 @@ public interface RepositoryFactory {
     IUserRepository getUserRepository();
 
     IProcessRepository getProcessRepository();
+
+    IAcessoRepository getAcessoRepository();
 }
