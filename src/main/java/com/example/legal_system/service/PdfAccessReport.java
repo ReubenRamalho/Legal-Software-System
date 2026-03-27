@@ -22,34 +22,34 @@ public class PdfAccessReport extends ReportGeneratorTemplate {
     }
 
     @Override
-    protected byte[] formatOutput(AccessStatisticsDTO estatisticas) {
+    protected byte[] formatOutput(AccessStatisticsDTO statistics) {
         Document document = new Document();
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        
+
         try {
             PdfWriter.getInstance(document, out);
             document.open();
-            
-            document.add(new Paragraph("=== RELATORIO DE ACESSOS ==="));
+
+            document.add(new Paragraph("=== ACCESS REPORT ==="));
             document.add(new Paragraph(" "));
-            document.add(new Paragraph("Horario de Pico: " + estatisticas.peakHour()));
+            document.add(new Paragraph("Peak Hour: " + statistics.peakHour()));
             document.add(new Paragraph(" "));
-            
-            document.add(new Paragraph("--- Paginas Mais Visitadas ---"));
-            for (String pagina : estatisticas.mostVisitedPages()) {
-                document.add(new Paragraph("- " + pagina));
+
+            document.add(new Paragraph("--- Most Visited Pages ---"));
+            for (String page : statistics.mostVisitedPages()) {
+                document.add(new Paragraph("- " + page));
             }
-            
+
             document.add(new Paragraph(" "));
-            document.add(new Paragraph("--- Acessos por Usuario ---"));
-            for (Map.Entry<String, Long> entry : estatisticas.totalAccess().entrySet()) {
-                document.add(new Paragraph("Usuario ID " + entry.getKey() + ": " + entry.getValue()));
+            document.add(new Paragraph("--- Access Count by User ---"));
+            for (Map.Entry<String, Long> entry : statistics.totalAccess().entrySet()) {
+                document.add(new Paragraph("User ID " + entry.getKey() + ": " + entry.getValue()));
             }
-            
+
             document.close();
             return out.toByteArray();
         } catch (Exception e) {
-            throw new RuntimeException("Erro ao formatar PDF: " + e.getMessage(), e);
+            throw new RuntimeException("Failed to format PDF report: " + e.getMessage(), e);
         }
     }
 

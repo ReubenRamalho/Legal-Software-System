@@ -11,6 +11,13 @@ import com.example.legal_system.dto.CreateUserDTO;
 import com.example.legal_system.dto.UpdateUserDTO;
 import com.example.legal_system.enums.UserType;
 
+/**
+ * Validates user data before creation and update operations.
+ *
+ * <p>Centralizes all business rules related to user input, such as login format,
+ * email presence, password complexity, and uniqueness constraints. Violations
+ * are reported as {@link IllegalArgumentException}s.</p>
+ */
 @Component
 public class UserValidatorService {
 
@@ -18,6 +25,7 @@ public class UserValidatorService {
     private static final int MAX_PASSWORD_LENGTH = 128;
     private static final int MIN_REQUIRED_COMPLEXITY_TYPES = 3;
     private static final int MAX_LOGIN_LENGTH = 12;
+
     private final IUserRepository userRepository;
     private final ILogger logger;
 
@@ -26,6 +34,12 @@ public class UserValidatorService {
         this.logger = logger;
     }
 
+    /**
+     * Validates all fields required for creating a new user.
+     *
+     * @param dto the creation payload.
+     * @throws IllegalArgumentException if any validation rule is violated.
+     */
     public void validateCreateUser(CreateUserDTO dto) {
         validateLogin(dto.login());
         validateLoginAvailable(dto.login());
@@ -34,16 +48,27 @@ public class UserValidatorService {
         validatePassword(dto.password(), dto.login(), dto.email());
     }
 
+    /**
+     * Validates the fields provided in a user update request.
+     *
+     * <p>Only non-null fields are validated. The existing user's current values
+     * are used as context when validating password rules.</p>
+     *
+     * @param userId the ID of the user being updated.
+     * @param dto    the (already normalized) update payload.
+     * @throws IllegalArgumentException if any validation rule is violated.
+     */
     public void validateUpdateUser(String userId, UpdateUserDTO dto) {
         UpdateUserDTO normalizedDto = dto.normalized();
         String login = normalizedDto.login();
         String email = normalizedDto.email();
         String type = normalizedDto.type();
         String password = normalizedDto.password();
+
         var existingUser = userRepository.findById(userId)
                 .orElseThrow(() -> {
-                    logger.warn("Validação de atualização falhou: usuário não encontrado. ID: " + userId);
-                    return new IllegalArgumentException("Usuário não encontrado");
+                    logger.warn("Update validation failed: user not found. ID: " + userId);
+                    return new IllegalArgumentException("User not found");
                 });
 
         if (login != null) {
@@ -62,22 +87,21 @@ public class UserValidatorService {
         if (password != null) {
             String effectiveLogin = login != null ? login : existingUser.getLogin();
             String effectiveEmail = email != null ? email : existingUser.getEmail();
-
             validatePassword(password, effectiveLogin, effectiveEmail);
         }
     }
 
     private void validateLoginAvailable(String login) {
         if (userRepository.existsByLogin(login)) {
-            logger.warn("Validação de criação falhou: login já está em uso. Login: " + login);
-            throw new IllegalArgumentException("Login já está em uso");
+            logger.warn("Create validation failed: login already in use. Login: " + login);
+            throw new IllegalArgumentException("Login is already in use");
         }
     }
 
     private void validateLoginAvailableForUpdate(String userId, String login) {
         if (userRepository.existsByLoginAndIdNot(login, userId)) {
-            logger.warn("Validação de atualização falhou: login já está em uso. ID: " + userId + ", login: " + login);
-            throw new IllegalArgumentException("Login já está em uso");
+            logger.warn("Update validation failed: login already in use. ID: " + userId + ", login: " + login);
+            throw new IllegalArgumentException("Login is already in use");
         }
     }
 
@@ -87,60 +111,60 @@ public class UserValidatorService {
 
     private void validateLogin(String login) {
         if (login == null || login.trim().isEmpty()) {
-            throw new IllegalArgumentException("Login não pode ser vazio");
+            throw new IllegalArgumentException("Login cannot be blank");
         }
 
         if (login.length() > MAX_LOGIN_LENGTH) {
-            throw new IllegalArgumentException("Login deve ter no máximo 12 caracteres");
+            throw new IllegalArgumentException("Login must be at most 12 characters long");
         }
 
         if (login.matches(".*\\d.*")) {
-            throw new IllegalArgumentException("Login não pode conter números");
+            throw new IllegalArgumentException("Login must not contain digits");
         }
     }
 
     private void validateEmail(String email) {
         if (email == null || email.trim().isEmpty()) {
-            throw new IllegalArgumentException("Email não pode ser vazio");
+            throw new IllegalArgumentException("Email cannot be blank");
         }
     }
 
     private void validatePassword(String password, String login, String email) {
         if (password == null || password.isEmpty()) {
-            throw new IllegalArgumentException("Senha não pode ser vazia");
+            throw new IllegalArgumentException("Password cannot be blank");
         }
 
         if (password.length() < MIN_PASSWORD_LENGTH || password.length() > MAX_PASSWORD_LENGTH) {
-            throw new IllegalArgumentException("Senha deve ter entre 8 e 128 caracteres");
+            throw new IllegalArgumentException("Password must be between 8 and 128 characters long");
         }
 
         if (password.equals(login)) {
-            throw new IllegalArgumentException("Senha não pode ser igual ao login");
+            throw new IllegalArgumentException("Password must not be equal to the login");
         }
 
         if (password.equals(email)) {
-            throw new IllegalArgumentException("Senha não pode ser igual ao email");
+            throw new IllegalArgumentException("Password must not be equal to the email");
         }
 
-        int tiposAtendidos = 0;
+        int complexityScore = 0;
 
         if (Pattern.compile("[A-Z]").matcher(password).find()) {
-            tiposAtendidos++;
+            complexityScore++;
         }
         if (Pattern.compile("[a-z]").matcher(password).find()) {
-            tiposAtendidos++;
+            complexityScore++;
         }
         if (Pattern.compile("[0-9]").matcher(password).find()) {
-            tiposAtendidos++;
+            complexityScore++;
         }
         if (Pattern.compile("[^a-zA-Z0-9]").matcher(password).find()) {
-            tiposAtendidos++;
+            complexityScore++;
         }
 
-        if (tiposAtendidos < MIN_REQUIRED_COMPLEXITY_TYPES) {
+        if (complexityScore < MIN_REQUIRED_COMPLEXITY_TYPES) {
             throw new IllegalArgumentException(
-                    "Senha deve conter ao menos 3 dos seguintes tipos: " +
-                            "maiúsculas, minúsculas, números e caracteres especiais");
+                    "Password must contain at least 3 of the following character types: " +
+                    "uppercase letters, lowercase letters, digits, and special characters");
         }
     }
 }

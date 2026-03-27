@@ -10,6 +10,13 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * JPA entity representing a system access log entry.
+ *
+ * <p>Each record captures who accessed the system, when they did so,
+ * and which page they visited. Access objects are created by the
+ * {@link #create(String, LocalDateTime, String)} factory method.</p>
+ */
 @Entity
 @Table(name = "access")
 @Getter
@@ -38,6 +45,14 @@ public class Access {
         this.visitedPage = visitedPage;
     }
 
+    /**
+     * Factory method for creating a new access log entry.
+     *
+     * @param userId          the ID of the user who accessed the system.
+     * @param hourDateAccess  the exact date and time of the access.
+     * @param visitedPage     the page or resource that was accessed.
+     * @return a new, unpersisted {@link Access} instance with a generated ID.
+     */
     public static Access create(String userId, LocalDateTime hourDateAccess, String visitedPage) {
         return new Access(userId, hourDateAccess, visitedPage);
     }
