@@ -5,6 +5,15 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
+import com.example.legal_system.controller.command.CommandInvoker;
+import com.example.legal_system.controller.command.process.CountEntitiesCommand;
+import com.example.legal_system.controller.command.process.CreateProcessCommand;
+import com.example.legal_system.controller.command.report.GenerateAccessReportCommand;
+import com.example.legal_system.controller.command.user.CreateUserCommand;
+import com.example.legal_system.controller.command.user.FindAllUsersCommand;
+import com.example.legal_system.controller.command.user.FindOneUserCommand;
+import com.example.legal_system.controller.command.user.RemoveUserCommand;
+import com.example.legal_system.controller.command.user.UpdateUserCommand;
 import com.example.legal_system.dto.CreateProcessDTO;
 import com.example.legal_system.dto.CreateUserDTO;
 import com.example.legal_system.dto.UpdateUserDTO;
@@ -13,48 +22,61 @@ import com.example.legal_system.service.AccessReportService;
 import com.example.legal_system.service.ProcessService;
 import com.example.legal_system.service.UserService;
 
+/**
+ * Fachada da camada de negócio — implementa o padrão Command.
+ *
+ * Cada método público cria o Command correspondente à operação solicitada
+ * e delega sua execução ao {@link CommandInvoker}. Dessa forma, a Fachada
+ * atua como Client do padrão: ela conhece quais Commands existem e como
+ * construí-los, mas não executa nenhuma lógica de negócio diretamente.
+ */
 @Component
 public class FacadeSingletonController {
 
     private final UserService userService;
     private final ProcessService processService;
     private final AccessReportService accessReportService;
+    private final CommandInvoker invoker;
 
-    public FacadeSingletonController(UserService userService, ProcessService processService, AccessReportService accessReportService) {
+    public FacadeSingletonController(
+            UserService userService,
+            ProcessService processService,
+            AccessReportService accessReportService) {
         this.userService = userService;
         this.processService = processService;
         this.accessReportService = accessReportService;
+        this.invoker = new CommandInvoker();
     }
 
     public int countTotalEntities() {
-        return userService.countUsers() + processService.countProcesses();
+        return invoker.invoke(new CountEntitiesCommand(userService, processService));
     }
 
     public void createUser(CreateUserDTO dto) {
-        userService.create(dto);
+        invoker.invoke(new CreateUserCommand(userService, dto));
     }
 
     public List<UserDTO> findAllUsers() {
-        return userService.findAll();
+        return invoker.invoke(new FindAllUsersCommand(userService));
     }
 
     public UserDTO findOneUser(String id) {
-        return userService.findOne(id);
+        return invoker.invoke(new FindOneUserCommand(userService, id));
     }
 
     public void updateUser(String id, UpdateUserDTO dto) {
-        userService.update(id, dto);
+        invoker.invoke(new UpdateUserCommand(userService, id, dto));
     }
 
     public void removeUser(String id) {
-        userService.remove(id);
+        invoker.invoke(new RemoveUserCommand(userService, id));
     }
 
     public void createProcess(CreateProcessDTO dto) {
-        processService.create(dto);
+        invoker.invoke(new CreateProcessCommand(processService, dto));
     }
 
     public String generateAccessReport(String format, LocalDate startDate, LocalDate endDate) {
-        return accessReportService.requestReport(format, startDate, endDate);
+        return invoker.invoke(new GenerateAccessReportCommand(accessReportService, format, startDate, endDate));
     }
 }
