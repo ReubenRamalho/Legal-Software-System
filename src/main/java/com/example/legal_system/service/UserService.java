@@ -161,7 +161,7 @@ public class UserService {
     }
 
     /**
-     * Desfaz a última atualização do usuário informado.
+     * Undoes the last update applied to the given user.
      *
      * <p>Retrieves the Memento saved by the Caretaker, restores the previous state
      * on the {@link User} Originator, persists the reverted data, and clears the

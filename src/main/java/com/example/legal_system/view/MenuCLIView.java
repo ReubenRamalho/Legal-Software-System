@@ -13,6 +13,14 @@ import com.example.legal_system.dto.CreateUserDTO;
 import com.example.legal_system.dto.UpdateUserDTO;
 import com.example.legal_system.dto.UserDTO;
 
+/**
+ * Command-line interface view for the Legal System.
+ *
+ * <p>Presents an interactive text menu to the user and translates input into
+ * calls to the {@link FacadeSingletonController}. All user-facing labels are
+ * intentionally kept in Portuguese, as the target users are Brazilian legal
+ * professionals.</p>
+ */
 @Component
 public class MenuCLIView {
 
@@ -22,6 +30,9 @@ public class MenuCLIView {
         this.facade = facade;
     }
 
+    /**
+     * Starts the main menu loop, reading user input until the exit option is selected.
+     */
     public void start() {
         Scanner scanner = new Scanner(System.in);
         boolean running = true;
@@ -90,13 +101,13 @@ public class MenuCLIView {
     private void createUser(Scanner scanner) {
         System.out.println("\n--- Novo Usuário ---");
         System.out.print("Nome: ");
-        String nome = scanner.nextLine();
+        String name = scanner.nextLine();
 
         System.out.print("Email: ");
         String email = scanner.nextLine();
 
         System.out.print("Tipo (Sócio-Administrador, Sócio, Advogado, Estagiário): ");
-        String tipo = scanner.nextLine();
+        String type = scanner.nextLine();
 
         System.out.print("Login: ");
         String login = scanner.nextLine();
@@ -105,7 +116,7 @@ public class MenuCLIView {
         String password = scanner.nextLine();
 
         try {
-            CreateUserDTO dto = new CreateUserDTO(nome, email, tipo, login, password);
+            CreateUserDTO dto = new CreateUserDTO(name, email, type, login, password);
             facade.createUser(dto);
             System.out.println("[OK] Usuário criado com sucesso!");
         } catch (IllegalArgumentException e) {
@@ -119,28 +130,30 @@ public class MenuCLIView {
         String cnj = scanner.nextLine();
 
         System.out.print("Título: ");
-        String titulo = scanner.nextLine();
+        String title = scanner.nextLine();
 
         System.out.print("Descrição: ");
-        String desc = scanner.nextLine();
+        String description = scanner.nextLine();
 
         System.out.print("Nome do Cliente: ");
-        String cliente = scanner.nextLine();
+        String clientName = scanner.nextLine();
 
         System.out.print("Vara (Court): ");
-        String vara = scanner.nextLine();
+        String court = scanner.nextLine();
 
         System.out.print("Distrito (District): ");
-        String distrito = scanner.nextLine();
+        String district = scanner.nextLine();
 
         System.out.print("IDs dos Advogados (separados por vírgula ou deixe em branco): ");
         String idsInput = scanner.nextLine();
 
-        // Converte a string de IDs separados por vírgula em uma lista
-        List<String> advogadosIds = idsInput.trim().isEmpty() ? List.of() : Arrays.asList(idsInput.split("\\s*,\\s*"));
+        // Parse the comma-separated list of lawyer IDs; empty input yields an empty list
+        List<String> lawyerIds = idsInput.trim().isEmpty()
+                ? List.of()
+                : Arrays.asList(idsInput.split("\\s*,\\s*"));
 
         try {
-            CreateProcessDTO dto = new CreateProcessDTO(cnj, titulo, desc, cliente, vara, distrito, advogadosIds);
+            CreateProcessDTO dto = new CreateProcessDTO(cnj, title, description, clientName, court, district, lawyerIds);
             facade.createProcess(dto);
             System.out.println("[OK] Processo criado com sucesso!");
         } catch (IllegalArgumentException e) {
@@ -187,13 +200,13 @@ public class MenuCLIView {
         String id = scanner.nextLine().trim();
 
         System.out.print("Novo nome: ");
-        String nome = scanner.nextLine();
+        String name = scanner.nextLine();
 
         System.out.print("Novo email: ");
         String email = scanner.nextLine();
 
         System.out.print("Novo tipo (Sócio-Administrador, Sócio, Advogado, Estagiário): ");
-        String tipo = scanner.nextLine();
+        String type = scanner.nextLine();
 
         System.out.print("Novo login: ");
         String login = scanner.nextLine();
@@ -202,7 +215,7 @@ public class MenuCLIView {
         String password = scanner.nextLine();
 
         try {
-            UpdateUserDTO dto = new UpdateUserDTO(nome, email, tipo, login, password);
+            UpdateUserDTO dto = new UpdateUserDTO(name, email, type, login, password);
             facade.updateUser(id, dto);
             System.out.println("[OK] Usuário atualizado com sucesso!");
         } catch (IllegalArgumentException e) {
@@ -236,19 +249,19 @@ public class MenuCLIView {
     private void generateReport(Scanner scanner) {
         System.out.println("\n--- Gerar Relatório de Acessos ---");
         System.out.print("Formato desejado (HTML ou PDF): ");
-        String formato = scanner.nextLine().trim();
+        String format = scanner.nextLine().trim();
 
         try {
-            // Pegando um período fixo de exemplo (últimos 30 dias até hoje)
-            LocalDate hoje = LocalDate.now();
-            LocalDate mesPassado = hoje.minusDays(30);
+            // Fixed period example: last 30 days up to today
+            LocalDate today = LocalDate.now();
+            LocalDate lastMonth = today.minusDays(30);
 
-            System.out.println("Gerando relatório para o período: " + mesPassado + " a " + hoje + "...");
-            
-            String caminhoSalvo = facade.generateAccessReport(formato, mesPassado, hoje);
-            
+            System.out.println("Gerando relatório para o período: " + lastMonth + " a " + today + "...");
+
+            String savedPath = facade.generateAccessReport(format, lastMonth, today);
+
             System.out.println("[OK] Relatório gerado com sucesso!");
-            System.out.println("O arquivo foi salvo em: " + caminhoSalvo);
+            System.out.println("O arquivo foi salvo em: " + savedPath);
         } catch (IllegalArgumentException e) {
             System.out.println("[ERROR] Formato inválido ou erro de regra de negócio: " + e.getMessage());
         } catch (Exception e) {
