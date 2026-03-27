@@ -5,6 +5,13 @@ import org.springframework.stereotype.Repository;
 import com.example.legal_system.domain.IProcessRepository;
 import com.example.legal_system.model.Process;
 
+/**
+ * JPA-based implementation of {@link IProcessRepository}.
+ *
+ * <p>Delegates all operations to {@link ProcessJpaRepository}, acting as an
+ * anti-corruption layer that keeps the domain interface free from Spring Data
+ * JPA-specific types and annotations.</p>
+ */
 @Repository
 public class ProcessRepositoryImpl implements IProcessRepository {
 

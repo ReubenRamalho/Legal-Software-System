@@ -8,6 +8,13 @@ import org.springframework.stereotype.Repository;
 import com.example.legal_system.domain.IUserRepository;
 import com.example.legal_system.model.User;
 
+/**
+ * JPA-based implementation of {@link IUserRepository}.
+ *
+ * <p>Delegates all operations to {@link UserJpaRepository}, acting as an
+ * anti-corruption layer that keeps the domain interface free from Spring Data
+ * JPA-specific types and annotations.</p>
+ */
 @Repository
 public class UserRepositoryImpl implements IUserRepository {
 
