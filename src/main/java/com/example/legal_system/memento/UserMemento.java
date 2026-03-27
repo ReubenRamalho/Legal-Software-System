@@ -1,14 +1,14 @@
 package com.example.legal_system.memento;
 
 /**
- * Memento do padrão Memento.
+ * Memento of the Memento pattern.
  *
- * Armazena um snapshot imutável do estado de um {@link com.example.legal_system.model.User}
- * em um determinado instante. Nenhuma lógica de negócio reside aqui — este
- * objeto existe apenas para preservar dados que poderão ser restaurados futuramente.
+ * <p>Stores an immutable snapshot of a {@link com.example.legal_system.model.User}'s
+ * state at a specific point in time. No business logic resides here — this object
+ * exists solely to preserve data that may be restored later.</p>
  *
- * A imutabilidade é garantida pela ausência de setters: uma vez criado,
- * o estado capturado não pode ser alterado.
+ * <p>Immutability is guaranteed by the absence of setters: once created,
+ * the captured state cannot be modified.</p>
  */
 public class UserMemento {
 

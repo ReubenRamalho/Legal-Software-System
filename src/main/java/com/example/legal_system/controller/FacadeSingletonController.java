@@ -24,12 +24,12 @@ import com.example.legal_system.service.ProcessService;
 import com.example.legal_system.service.UserService;
 
 /**
- * Fachada da camada de negócio — implementa o padrão Command.
+ * Business layer facade — implements the Command pattern.
  *
- * Cada método público cria o Command correspondente à operação solicitada
- * e delega sua execução ao {@link CommandInvoker}. Dessa forma, a Fachada
- * atua como Client do padrão: ela conhece quais Commands existem e como
- * construí-los, mas não executa nenhuma lógica de negócio diretamente.
+ * <p>Each public method constructs the {@link Command} corresponding to the requested
+ * operation and delegates its execution to the {@link CommandInvoker}. The Facade
+ * acts as the Client in the pattern: it knows which Commands exist and how to build
+ * them, but it never executes any business logic directly.</p>
  */
 @Component
 public class FacadeSingletonController {

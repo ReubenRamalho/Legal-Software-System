@@ -7,7 +7,7 @@ import com.example.legal_system.dto.UserDTO;
 import com.example.legal_system.service.UserService;
 
 /**
- * Command responsável por encapsular a operação de listagem de todos os usuários.
+ * Command responsible for encapsulating the operation of listing all users.
  */
 public class FindAllUsersCommand implements Command<List<UserDTO>> {
 

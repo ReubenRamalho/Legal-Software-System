@@ -4,7 +4,7 @@ import com.example.legal_system.controller.command.Command;
 import com.example.legal_system.service.UserService;
 
 /**
- * Command responsável por encapsular a operação de remoção de usuário.
+ * Command responsible for encapsulating the user removal operation.
  */
 public class RemoveUserCommand implements Command<Void> {
 

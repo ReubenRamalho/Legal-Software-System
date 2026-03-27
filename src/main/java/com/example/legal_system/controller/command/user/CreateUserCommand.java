@@ -5,7 +5,7 @@ import com.example.legal_system.dto.CreateUserDTO;
 import com.example.legal_system.service.UserService;
 
 /**
- * Command responsável por encapsular a operação de criação de usuário.
+ * Command responsible for encapsulating the user creation operation.
  */
 public class CreateUserCommand implements Command<Void> {
 

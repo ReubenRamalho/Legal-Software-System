@@ -1,24 +1,24 @@
 package com.example.legal_system.controller.command;
 
 /**
- * Invoker do padrão Command.
+ * Invoker of the Command pattern.
  *
- * Responsável por receber um objeto {@link Command} e disparar sua execução.
- * Desacopla completamente o remetente da requisição (a Fachada) do receptor
- * que de fato executa a lógica de negócio (os Services).
+ * <p>Responsible for receiving a {@link Command} object and triggering its execution.
+ * Completely decouples the request sender (the Facade) from the receiver that
+ * actually executes the business logic (the Services).</p>
  *
- * A Fachada não precisa saber como o Command foi construído nem como ele
- * funciona internamente — ela apenas entrega o Command ao Invoker e obtém
- * o resultado de volta.
+ * <p>The Facade does not need to know how a Command was constructed or how it
+ * works internally — it simply hands the Command to the Invoker and receives
+ * the result in return.</p>
  */
 public class CommandInvoker {
 
     /**
-     * Executa o Command fornecido e retorna seu resultado.
+     * Executes the given Command and returns its result.
      *
-     * @param <T>     Tipo do resultado produzido pelo Command.
-     * @param command O Command a ser executado.
-     * @return O resultado retornado pelo Command.
+     * @param <T>     the type of result produced by the Command.
+     * @param command the Command to execute.
+     * @return the result returned by the Command.
      */
     public <T> T invoke(Command<T> command) {
         return command.execute();

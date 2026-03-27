@@ -10,6 +10,14 @@ import lombok.Setter;
 
 import com.example.legal_system.memento.UserMemento;
 
+/**
+ * JPA entity representing a system user.
+ *
+ * <p>Acts as the <b>Originator</b> in the Memento pattern: it can capture its own
+ * state via {@link #createMemento()} and restore a previous state via
+ * {@link #restoreFromMemento(UserMemento)}. User objects are created through the
+ * {@link #create(String, String, String, String, String)} factory method.</p>
+ */
 @Entity
 @Table(name = "users")
 @Getter
@@ -36,29 +44,40 @@ public class User {
         this.password = password;
     }
 
+    /**
+     * Factory method for creating a new user.
+     *
+     * @param name     the user's full name.
+     * @param email    the user's email address.
+     * @param type     the user's role display name.
+     * @param login    the user's login identifier.
+     * @param password the user's password.
+     * @return a new, unpersisted {@link User} instance with a generated ID.
+     */
     public static User create(String name, String email, String type, String login, String password) {
         return new User(name, email, type, login, password);
     }
 
     /**
-     * Originator — cria um Memento com o estado atual deste usuário.
+     * Originator — creates a Memento capturing the current state of this user.
      *
-     * Deve ser chamado imediatamente antes de qualquer atualização, de modo
-     * que o snapshot reflita os dados anteriores à modificação.
+     * <p>Must be called immediately before any update so that the snapshot reflects
+     * the data prior to the modification.</p>
      *
-     * @return um {@link UserMemento} imutável representando o estado atual.
+     * @return an immutable {@link UserMemento} representing the current state.
      */
     public UserMemento createMemento() {
         return new UserMemento(id, name, email, type, login, password);
     }
 
     /**
-     * Originator — restaura o estado deste usuário a partir de um Memento.
+     * Originator — restores this user's state from the given Memento.
      *
-     * Sobrescreve os campos atuais com os valores preservados no snapshot,
-     * efetivando o "desfazer" da última atualização.
+     * <p>Overwrites the current field values with those preserved in the snapshot,
+     * effectively performing the "undo" of the last update.
+     * Note: the {@code id} field is intentionally not restored, as it never changes.</p>
      *
-     * @param memento o snapshot a ser restaurado.
+     * @param memento the snapshot to restore from.
      */
     public void restoreFromMemento(UserMemento memento) {
         this.name     = memento.getName();

@@ -5,7 +5,7 @@ import com.example.legal_system.dto.UpdateUserDTO;
 import com.example.legal_system.service.UserService;
 
 /**
- * Command responsável por encapsular a operação de atualização de usuário.
+ * Command responsible for encapsulating the user update operation.
  */
 public class UpdateUserCommand implements Command<Void> {
 

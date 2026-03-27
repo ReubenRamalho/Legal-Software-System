@@ -1,21 +1,21 @@
 package com.example.legal_system.controller.command;
 
 /**
- * Interface base do padrão Command.
+ * Base interface for the Command pattern.
  *
- * Cada operação da camada de negócio será encapsulada como um objeto
- * concreto que implementa esta interface, desacoplando o invocador
- * (Fachada) do receptor (Services).
+ * <p>Each business layer operation is encapsulated as a concrete object
+ * implementing this interface, decoupling the invoker (the Facade) from
+ * the receiver (the Services).</p>
  *
- * @param <T> Tipo do resultado produzido pela execução do comando.
- *            Usar {@link Void} para comandos sem retorno.
+ * @param <T> the type of result produced by the command's execution.
+ *            Use {@link Void} for commands that produce no return value.
  */
 public interface Command<T> {
 
     /**
-     * Executa a operação encapsulada por este comando.
+     * Executes the operation encapsulated by this command.
      *
-     * @return o resultado da operação, ou {@code null} quando {@code T} é {@link Void}.
+     * @return the result of the operation, or {@code null} when {@code T} is {@link Void}.
      */
     T execute();
 }

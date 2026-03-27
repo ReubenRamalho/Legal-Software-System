@@ -5,7 +5,7 @@ import com.example.legal_system.dto.UserDTO;
 import com.example.legal_system.service.UserService;
 
 /**
- * Command responsável por encapsular a operação de busca de um usuário por ID.
+ * Command responsible for encapsulating the user lookup by ID operation.
  */
 public class FindOneUserCommand implements Command<UserDTO> {
 
