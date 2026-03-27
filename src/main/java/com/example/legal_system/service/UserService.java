@@ -12,6 +12,7 @@ import com.example.legal_system.dto.CreateUserDTO;
 import com.example.legal_system.dto.UpdateUserDTO;
 import com.example.legal_system.dto.UserDTO;
 import com.example.legal_system.enums.UserType;
+import com.example.legal_system.memento.UserMementoCaretaker;
 import com.example.legal_system.model.User;
 
 @Service
@@ -20,14 +21,17 @@ public class UserService {
     private final IUserRepository userRepository;
     private final UserValidatorService userValidatorService;
     private final ILogger logger;
+    private final UserMementoCaretaker caretaker;
 
     public UserService(
             RepositoryFactory repositoryFactory,
             UserValidatorService userValidatorService,
-            ILogger logger) {
+            ILogger logger,
+            UserMementoCaretaker caretaker) {
         this.userRepository = repositoryFactory.getUserRepository();
         this.userValidatorService = userValidatorService;
         this.logger = logger;
+        this.caretaker = caretaker;
     }
 
     public void create(CreateUserDTO dto) {
@@ -82,6 +86,9 @@ public class UserService {
 
         userValidatorService.validateUpdateUser(id, normalizedDto);
 
+        // Memento: salva o estado atual antes de qualquer modificação
+        caretaker.save(user.createMemento());
+
         String name = normalizedDto.name();
         String email = normalizedDto.email();
         String type = normalizedDto.type();
@@ -119,6 +126,37 @@ public class UserService {
             }
             throw e;
         }
+    }
+
+    /**
+     * Desfaz a última atualização do usuário informado.
+     *
+     * Recupera o Memento salvo pelo Caretaker, restaura o estado anterior
+     * no objeto {@link User} e persiste as informações revertidas no banco.
+     * O Memento é removido após o uso para impedir um segundo desfazer.
+     *
+     * @param id identificador do usuário cujo update será desfeito.
+     * @throws IllegalArgumentException se não houver atualização a desfazer
+     *         ou se o usuário não for encontrado.
+     */
+    public void undoLastUpdate(String id) {
+        var memento = caretaker.getLast(id)
+                .orElseThrow(() -> {
+                    logger.warn("Undo falhou: nenhuma atualização registrada para o usuário. ID: " + id);
+                    return new IllegalArgumentException("Nenhuma atualização para desfazer");
+                });
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> {
+                    logger.warn("Undo falhou: usuário não encontrado. ID: " + id);
+                    return new IllegalArgumentException("Usuário não encontrado");
+                });
+
+        user.restoreFromMemento(memento);
+        userRepository.save(user);
+        caretaker.clear(id);
+
+        logger.info("Última atualização desfeita com sucesso. ID: " + id);
     }
 
     public void remove(String id) {
