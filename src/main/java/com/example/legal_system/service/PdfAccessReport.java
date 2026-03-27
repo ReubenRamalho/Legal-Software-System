@@ -17,8 +17,8 @@ import com.itextpdf.text.pdf.PdfWriter;
 @Component("PDF")
 public class PdfAccessReport extends ReportGeneratorTemplate {
 
-    public PdfAccessReport(IAccessRepository acessoRepository) {
-        super(acessoRepository);
+    public PdfAccessReport(IAccessRepository accessRepository) {
+        super(accessRepository);
     }
 
     @Override

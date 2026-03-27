@@ -12,8 +12,8 @@ import com.example.legal_system.dto.AccessStatisticsDTO;
 @Component("HTML")
 public class HtmlAccessReport extends ReportGeneratorTemplate {
 
-    public HtmlAccessReport(IAccessRepository acessoRepository) {
-        super(acessoRepository);
+    public HtmlAccessReport(IAccessRepository accessRepository) {
+        super(accessRepository);
     }
 
     @Override

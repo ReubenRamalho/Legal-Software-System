@@ -12,10 +12,10 @@ import com.example.legal_system.dto.AccessRecordDTO;
 
 public abstract class ReportGeneratorTemplate {
 
-    private final IAccessRepository acessoRepository;
+    private final IAccessRepository accessRepository;
 
-    protected ReportGeneratorTemplate(IAccessRepository acessoRepository) {
-        this.acessoRepository = acessoRepository;
+    protected ReportGeneratorTemplate(IAccessRepository accessRepository) {
+        this.accessRepository = accessRepository;
     }
 
     // 1. O TEMPLATE METHOD (O esqueleto do algoritmo)
@@ -29,7 +29,7 @@ public abstract class ReportGeneratorTemplate {
     // 2. Passos comuns implementados na base
     protected List<AccessRecordDTO> extractData(LocalDate startDate, LocalDate endDate) {
         // Busca os dados através da interface de repositório
-        return acessoRepository.findByHourDateAccessBetween(startDate, endDate);
+        return accessRepository.findByHourDateAccessBetween(startDate, endDate);
     }
 
     protected AccessStatisticsDTO processStatistics(List<AccessRecordDTO> rawData) {

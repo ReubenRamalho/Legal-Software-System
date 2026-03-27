@@ -7,19 +7,25 @@ import com.example.legal_system.domain.IProcessRepository;
 import com.example.legal_system.domain.IUserRepository;
 import com.example.legal_system.domain.RepositoryFactory;
 
+/**
+ * JPA-based implementation of the {@link RepositoryFactory} abstract factory.
+ *
+ * <p>Wires together the Spring Data JPA repository adapters and exposes them
+ * through the domain interface, keeping the business layer unaware of JPA details.</p>
+ */
 @Component
 public class JpaRepositoryFactory implements RepositoryFactory {
 
     private final IUserRepository userRepository;
     private final IProcessRepository processRepository;
-    private final IAccessRepository acessoRepository;
+    private final IAccessRepository accessRepository;
 
-    public JpaRepositoryFactory(IUserRepository userRepository, 
+    public JpaRepositoryFactory(IUserRepository userRepository,
                                 IProcessRepository processRepository,
-                                IAccessRepository acessoRepository) {
+                                IAccessRepository accessRepository) {
         this.userRepository = userRepository;
         this.processRepository = processRepository;
-        this.acessoRepository = acessoRepository;
+        this.accessRepository = accessRepository;
     }
 
     @Override
@@ -33,7 +39,7 @@ public class JpaRepositoryFactory implements RepositoryFactory {
     }
 
     @Override
-    public IAccessRepository getAcessoRepository() {
-        return acessoRepository;
+    public IAccessRepository getAccessRepository() {
+        return accessRepository;
     }
 }
