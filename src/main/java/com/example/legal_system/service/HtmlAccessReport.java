@@ -9,6 +9,12 @@ import org.springframework.stereotype.Component;
 import com.example.legal_system.domain.IAccessRepository;
 import com.example.legal_system.dto.AccessStatisticsDTO;
 
+/**
+ * HTML implementation of {@link ReportGeneratorTemplate}.
+ *
+ * <p>Formats the access statistics as a UTF-8 encoded HTML document and writes
+ * the file to the {@code reports/html/} directory under the working directory.</p>
+ */
 @Component("HTML")
 public class HtmlAccessReport extends ReportGeneratorTemplate {
 
@@ -20,23 +26,23 @@ public class HtmlAccessReport extends ReportGeneratorTemplate {
     protected byte[] formatOutput(AccessStatisticsDTO statistics) {
         StringBuilder html = new StringBuilder();
         html.append("<html><head><meta charset=\"UTF-8\"></head><body>");
-        html.append("<h1>Relatório de Acessos</h1>");
-        html.append("<p>Horário de Pico: ").append(statistics.peakHour()).append("</p>");
-        
-        html.append("<h2>Páginas mais visitadas</h2><ul>");
+        html.append("<h1>Access Report</h1>");
+        html.append("<p>Peak Hour: ").append(statistics.peakHour()).append("</p>");
+
+        html.append("<h2>Most Visited Pages</h2><ul>");
         for (String page : statistics.mostVisitedPages()) {
             html.append("<li>").append(page).append("</li>");
         }
         html.append("</ul>");
 
-        html.append("<h2>Acessos por usuário</h2><ul>");
+        html.append("<h2>Access Count by User</h2><ul>");
         statistics.totalAccess().forEach((userId, total) -> {
-            html.append("<li>Usuário ID: ").append(userId).append(" - Total: ").append(total).append("</li>");
+            html.append("<li>User ID: ").append(userId).append(" - Total: ").append(total).append("</li>");
         });
         html.append("</ul>");
 
         html.append("</body></html>");
-        
+
         return html.toString().getBytes();
     }
 
@@ -49,7 +55,7 @@ public class HtmlAccessReport extends ReportGeneratorTemplate {
             Files.write(filePath, formattedReport);
             return filePath.toAbsolutePath().toString();
         } catch (Exception e) {
-            throw new RuntimeException("Erro ao salvar arquivo HTML: " + e.getMessage(), e);
+            throw new RuntimeException("Failed to save HTML report: " + e.getMessage(), e);
         }
     }
 }

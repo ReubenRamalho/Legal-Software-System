@@ -14,6 +14,12 @@ import com.itextpdf.text.Document;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 
+/**
+ * PDF implementation of {@link ReportGeneratorTemplate}.
+ *
+ * <p>Formats the access statistics as a PDF document using the iText library
+ * and writes the file to the {@code reports/pdf/} directory under the working directory.</p>
+ */
 @Component("PDF")
 public class PdfAccessReport extends ReportGeneratorTemplate {
 
