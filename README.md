@@ -24,6 +24,15 @@ Projeto da disciplina **Métodos de Projeto de Software** do Professor Raoni
 - **Maven 3.8+** — Gerenciador de dependências
 - **Docker** — Containerização do banco de dados
 
+## Padrões de Projeto Implementados
+
+- **Façade** — `FacadeSingletonController` centraliza o acesso à camada de negócio
+- **Command** — Cada operação da fachada é encapsulada em um objeto `Command`; o `CommandInvoker` realiza a execução desacoplada
+- **Memento** — Permite desfazer a última atualização de um usuário; `User` é o Originator, `UserMemento` o snapshot e `UserMementoCaretaker` o guardião do histórico
+- **Template Method** — `ReportGeneratorTemplate` define o esqueleto da geração de relatórios; `HtmlAccessReport` e `PdfAccessReport` implementam os passos variáveis
+- **Abstract Factory** — `RepositoryFactory` abstrai a criação dos repositórios, mantendo o domínio desacoplado da infraestrutura JPA
+- **Adapter** — `Slf4jLoggerAdapter` adapta o SLF4J à interface de domínio `ILogger`
+
 ## Diagramas
 
 ### Diagrama de Casos de Uso - Gerenciar Usuários
@@ -96,8 +105,13 @@ mvn spring-boot:run
 1. Criar Usuário
 2. Criar Processo
 3. Listar Todos os Usuários
-4. Contar Total de Entidades
-5. Sair
+4. Buscar Usuário por ID
+5. Atualizar Usuário
+6. Remover Usuário
+7. Contar Total de Entidades
+8. Gerar Relatório de Acessos
+9. Desfazer Última Atualização de Usuário
+10. Sair
 Escolha uma opção:
 ```
 
@@ -111,7 +125,7 @@ Cria um novo usuário no sistema com validações obrigatórias.
 - **Nome**: Nome completo do usuário
 - **Email**: Campo obrigatório (qualquer formato não-vazio)
 - **Tipo**: Categoria do usuário (um dos valores: "Sócio-Administrador", "Sócio", "Advogado", "Estagiário")
-- **Login**: Identificador único do usuário
+- **Login**: Identificador único, máximo 12 caracteres, somente letras
 - **Senha**: 8-128 caracteres, deve conter **pelo menos 3 dos 4 tipos**:
   - Letras maiúsculas (A-Z)
   - Letras minúsculas (a-z)
@@ -163,10 +177,7 @@ IDs dos Advogados (separados por vírgula ou deixe em branco): 9f3dc492-a867-41f
 
 Exibe uma lista com todos os usuários cadastrados no sistema.
 
-**Informações exibidas:**
-- ID (UUID)
-- Nome
-- Tipo (Categoria do usuário)
+**Informações exibidas:** ID (UUID), Nome e Tipo (categoria do usuário).
 
 **Exemplo de uso:**
 ```
@@ -178,25 +189,102 @@ Escolha uma opção: 3
 - 1c7bf4cb-4a87-4748-9f9f-d9a736e5e6b4: Ana Carolina Mendes (Tipo: Advogado)
 ```
 
-### Opção 4: Contar Total de Entidades
+### Opção 4: Buscar Usuário por ID
 
-Mostra a quantidade total de usuários e processos cadastrados.
+Localiza e exibe os dados de um usuário específico pelo seu UUID.
 
-**Saída exemplo:**
+**Exemplo de uso:**
 ```
 Escolha uma opção: 4
+
+--- Buscar Usuário por ID ---
+ID do usuário: 9f3dc492-a867-41f5-a137-9619be49d4a2
+Usuário encontrado:
+- ID: 9f3dc492-a867-41f5-a137-9619be49d4a2
+- Nome: Carlos Pereira
+- Tipo: Sócio-Administrador
+```
+
+### Opção 5: Atualizar Usuário
+
+Atualiza os campos de um usuário existente. Deixe um campo em branco para mantê-lo inalterado.
+
+**Exemplo de uso:**
+```
+Escolha uma opção: 5
+
+--- Atualizar Usuário ---
+(Deixe em branco para manter o valor atual)
+ID do usuário: 9f3dc492-a867-41f5-a137-9619be49d4a2
+Novo nome: Carlos Augusto Pereira
+Novo email:
+Novo tipo (Sócio-Administrador, Sócio, Advogado, Estagiário):
+Novo login:
+Nova senha:
+[OK] Usuário atualizado com sucesso!
+```
+
+### Opção 6: Remover Usuário
+
+Remove permanentemente um usuário do sistema pelo seu UUID.
+
+**Exemplo de uso:**
+```
+Escolha uma opção: 6
+
+--- Remover Usuário ---
+ID do usuário: 1c7bf4cb-4a87-4748-9f9f-d9a736e5e6b4
+[OK] Usuário removido com sucesso!
+```
+
+### Opção 7: Contar Total de Entidades
+
+Mostra a quantidade total de usuários e processos cadastrados no banco de dados.
+
+**Exemplo de uso:**
+```
+Escolha uma opção: 7
 
 --- Contagem de Entidades ---
 Total de entidades (Usuários + Processos) registradas no banco: 6
 ```
 
-### Opção 5: Sair
+### Opção 8: Gerar Relatório de Acessos
+
+Gera um relatório dos acessos ao sistema nos últimos 30 dias no formato escolhido (HTML ou PDF). O arquivo é salvo automaticamente em `reports/html/` ou `reports/pdf/`.
+
+**Exemplo de uso:**
+```
+Escolha uma opção: 8
+
+--- Gerar Relatório de Acessos ---
+Formato desejado (HTML ou PDF): HTML
+Gerando relatório para o período: 2026-02-26 a 2026-03-27...
+[OK] Relatório gerado com sucesso!
+O arquivo foi salvo em: /caminho/para/reports/html/relatorio_1743000000000.html
+```
+
+### Opção 9: Desfazer Última Atualização de Usuário
+
+Reverte o último **update** realizado em um usuário, restaurando o estado anterior à modificação. Implementa o padrão **Memento**.
+
+> **Atenção:** Só é possível desfazer a atualização mais recente. Após o desfazimento, o histórico é limpo e a operação não pode ser repetida.
+
+**Exemplo de uso:**
+```
+Escolha uma opção: 9
+
+--- Desfazer Última Atualização de Usuário ---
+ID do usuário: 9f3dc492-a867-41f5-a137-9619be49d4a2
+[OK] Última atualização desfeita com sucesso!
+```
+
+### Opção 10: Sair
 
 Encerra a aplicação.
 
-**Saída exemplo:**
 ```
-Escolha uma opção: 5
+Escolha uma opção: 10
 
 Encerrando o sistema. Até logo!
 ```
