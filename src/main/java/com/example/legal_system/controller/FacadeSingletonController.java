@@ -13,6 +13,7 @@ import com.example.legal_system.controller.command.user.CreateUserCommand;
 import com.example.legal_system.controller.command.user.FindAllUsersCommand;
 import com.example.legal_system.controller.command.user.FindOneUserCommand;
 import com.example.legal_system.controller.command.user.RemoveUserCommand;
+import com.example.legal_system.controller.command.user.UndoUpdateUserCommand;
 import com.example.legal_system.controller.command.user.UpdateUserCommand;
 import com.example.legal_system.dto.CreateProcessDTO;
 import com.example.legal_system.dto.CreateUserDTO;
@@ -66,6 +67,10 @@ public class FacadeSingletonController {
 
     public void updateUser(String id, UpdateUserDTO dto) {
         invoker.invoke(new UpdateUserCommand(userService, id, dto));
+    }
+
+    public void undoUpdateUser(String id) {
+        invoker.invoke(new UndoUpdateUserCommand(userService, id));
     }
 
     public void removeUser(String id) {

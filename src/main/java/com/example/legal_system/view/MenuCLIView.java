@@ -40,7 +40,8 @@ public class MenuCLIView {
             System.out.println("6. Remover Usuário");
             System.out.println("7. Contar Total de Entidades");
             System.out.println("8. Gerar Relatório de Acessos");
-            System.out.println("9. Sair");
+            System.out.println("9. Desfazer Última Atualização de Usuário");
+            System.out.println("10. Sair");
             System.out.print("Escolha uma opção: ");
 
             String option = scanner.nextLine().trim();
@@ -71,6 +72,9 @@ public class MenuCLIView {
                     generateReport(scanner);
                     break;
                 case "9":
+                    undoUpdateUser(scanner);
+                    break;
+                case "10":
                     System.out.println("\nEncerrando o sistema. Até logo!");
                     running = false;
                     break;
@@ -249,6 +253,19 @@ public class MenuCLIView {
             System.out.println("[ERROR] Formato inválido ou erro de regra de negócio: " + e.getMessage());
         } catch (Exception e) {
             System.out.println("[ERROR] Erro inesperado ao gerar relatório: " + e.getMessage());
+        }
+    }
+
+    private void undoUpdateUser(Scanner scanner) {
+        System.out.println("\n--- Desfazer Última Atualização de Usuário ---");
+        System.out.print("ID do usuário: ");
+        String id = scanner.nextLine().trim();
+
+        try {
+            facade.undoUpdateUser(id);
+            System.out.println("[OK] Última atualização desfeita com sucesso!");
+        } catch (IllegalArgumentException e) {
+            System.out.println("[ERROR] Não foi possível desfazer: " + e.getMessage());
         }
     }
 }
