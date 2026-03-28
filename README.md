@@ -87,7 +87,6 @@ src/main/java/com/example/legal_system/
 ### Diagrama de Classes (PENDENTE DE ATUALIZAÇÃO)
 ![Diagrama de Classes](diagrams/v2/diagrama-de-classes-v2.png)
 
-O código-fonte PlantUML está disponível em [`diagrams/v3/diagrama-de-classes-v3.puml`](diagrams/v3/diagrama-de-classes-v3.puml).
 
 ## Padrões de Projeto Utilizados
 
