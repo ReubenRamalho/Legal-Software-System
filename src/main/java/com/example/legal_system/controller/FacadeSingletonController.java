@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import com.example.legal_system.controller.command.CommandInvoker;
 import com.example.legal_system.controller.command.process.CountEntitiesCommand;
 import com.example.legal_system.controller.command.process.CreateProcessCommand;
+import com.example.legal_system.controller.command.process.UpdateProcessStatusCommand;
 import com.example.legal_system.controller.command.report.GenerateAccessReportCommand;
 import com.example.legal_system.controller.command.user.CreateUserCommand;
 import com.example.legal_system.controller.command.user.FindAllUsersCommand;
@@ -19,6 +20,7 @@ import com.example.legal_system.dto.CreateProcessDTO;
 import com.example.legal_system.dto.CreateUserDTO;
 import com.example.legal_system.dto.UpdateUserDTO;
 import com.example.legal_system.dto.UserDTO;
+import com.example.legal_system.enums.StatusProcess;
 import com.example.legal_system.service.AccessReportService;
 import com.example.legal_system.service.ProcessService;
 import com.example.legal_system.service.UserService;
@@ -79,6 +81,19 @@ public class FacadeSingletonController {
 
     public void createProcess(CreateProcessDTO dto) {
         invoker.invoke(new CreateProcessCommand(processService, dto));
+    }
+
+    /**
+     * Updates the status of the process with the given ID and triggers the Observer
+     * notification chain.
+     *
+     * @param processId the UUID string of the process.
+     * @param status    the raw status string (must match a {@link StatusProcess} constant name).
+     * @throws IllegalArgumentException if the status string is invalid or the process is not found.
+     */
+    public void updateProcessStatus(String processId, String status) {
+        StatusProcess newStatus = StatusProcess.valueOf(status.toUpperCase());
+        invoker.invoke(new UpdateProcessStatusCommand(processService, processId, newStatus));
     }
 
     public String generateAccessReport(String format, LocalDate startDate, LocalDate endDate) {

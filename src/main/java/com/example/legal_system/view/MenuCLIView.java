@@ -52,7 +52,8 @@ public class MenuCLIView {
             System.out.println("7. Contar Total de Entidades");
             System.out.println("8. Gerar Relatório de Acessos");
             System.out.println("9. Desfazer Última Atualização de Usuário");
-            System.out.println("10. Sair");
+            System.out.println("10. Atualizar Status do Processo");
+            System.out.println("11. Sair");
             System.out.print("Escolha uma opção: ");
 
             String option = scanner.nextLine().trim();
@@ -86,6 +87,9 @@ public class MenuCLIView {
                     undoUpdateUser(scanner);
                     break;
                 case "10":
+                    updateProcessStatus(scanner);
+                    break;
+                case "11":
                     System.out.println("\nEncerrando o sistema. Até logo!");
                     running = false;
                     break;
@@ -279,6 +283,23 @@ public class MenuCLIView {
             System.out.println("[OK] Última atualização desfeita com sucesso!");
         } catch (IllegalArgumentException e) {
             System.out.println("[ERROR] Não foi possível desfazer: " + e.getMessage());
+        }
+    }
+
+    private void updateProcessStatus(Scanner scanner) {
+        System.out.println("\n--- Atualizar Status do Processo ---");
+        System.out.print("ID do processo: ");
+        String id = scanner.nextLine().trim();
+
+        System.out.println("Status disponíveis: ACTIVE, SUSPENDED, ARCHIVED, CLOSED, IN_APPEAL");
+        System.out.print("Novo status: ");
+        String status = scanner.nextLine().trim();
+
+        try {
+            facade.updateProcessStatus(id, status);
+            System.out.println("[OK] Status do processo atualizado com sucesso!");
+        } catch (IllegalArgumentException e) {
+            System.out.println("[ERROR] Erro ao atualizar status: " + e.getMessage());
         }
     }
 }
