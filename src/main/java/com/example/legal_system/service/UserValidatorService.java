@@ -1,7 +1,5 @@
 package com.example.legal_system.service;
 
-import java.util.regex.Pattern;
-
 import org.springframework.stereotype.Component;
 
 import com.example.legal_system.domain.ILogger;
@@ -10,6 +8,8 @@ import com.example.legal_system.domain.RepositoryFactory;
 import com.example.legal_system.dto.CreateUserDTO;
 import com.example.legal_system.dto.UpdateUserDTO;
 import com.example.legal_system.enums.UserType;
+import com.example.legal_system.service.strategy.PasswordStrategyFactory;
+import com.example.legal_system.service.strategy.PasswordValidationStrategy;
 
 /**
  * Validates user data before creation and update operations.
@@ -17,25 +17,33 @@ import com.example.legal_system.enums.UserType;
  * <p>Centralizes all business rules related to user input, such as login format,
  * email presence, password complexity, and uniqueness constraints. Violations
  * are reported as {@link IllegalArgumentException}s.</p>
+ *
+ * <p>Password complexity rules are delegated to a {@link PasswordValidationStrategy}
+ * selected at runtime by {@link PasswordStrategyFactory} based on the user's
+ * {@link UserType}. This allows different roles to enforce different security
+ * policies without changing this class.</p>
  */
 @Component
 public class UserValidatorService {
 
-    private static final int MIN_PASSWORD_LENGTH = 8;
-    private static final int MAX_PASSWORD_LENGTH = 128;
-    private static final int MIN_REQUIRED_COMPLEXITY_TYPES = 3;
     private static final int MAX_LOGIN_LENGTH = 12;
 
     private final IUserRepository userRepository;
     private final ILogger logger;
+    private final PasswordStrategyFactory passwordStrategyFactory;
 
-    public UserValidatorService(RepositoryFactory repositoryFactory, ILogger logger) {
+    public UserValidatorService(RepositoryFactory repositoryFactory, ILogger logger,
+            PasswordStrategyFactory passwordStrategyFactory) {
         this.userRepository = repositoryFactory.getUserRepository();
         this.logger = logger;
+        this.passwordStrategyFactory = passwordStrategyFactory;
     }
 
     /**
      * Validates all fields required for creating a new user.
+     *
+     * <p>The password is validated using the strategy that corresponds to the
+     * requested user type.</p>
      *
      * @param dto the creation payload.
      * @throws IllegalArgumentException if any validation rule is violated.
@@ -44,15 +52,16 @@ public class UserValidatorService {
         validateLogin(dto.login());
         validateLoginAvailable(dto.login());
         validateEmail(dto.email());
-        validateType(dto.type());
-        validatePassword(dto.password(), dto.login(), dto.email());
+        UserType userType = validateType(dto.type());
+        validatePassword(dto.password(), dto.login(), dto.email(), userType);
     }
 
     /**
      * Validates the fields provided in a user update request.
      *
-     * <p>Only non-null fields are validated. The existing user's current values
-     * are used as context when validating password rules.</p>
+     * <p>Only non-null fields are validated. The effective user type for password
+     * strategy selection is the one provided in the update DTO, or — if absent —
+     * the user's current type stored in the repository.</p>
      *
      * @param userId the ID of the user being updated.
      * @param dto    the (already normalized) update payload.
@@ -60,9 +69,9 @@ public class UserValidatorService {
      */
     public void validateUpdateUser(String userId, UpdateUserDTO dto) {
         UpdateUserDTO normalizedDto = dto.normalized();
-        String login = normalizedDto.login();
-        String email = normalizedDto.email();
-        String type = normalizedDto.type();
+        String login    = normalizedDto.login();
+        String email    = normalizedDto.email();
+        String type     = normalizedDto.type();
         String password = normalizedDto.password();
 
         var existingUser = userRepository.findById(userId)
@@ -80,14 +89,17 @@ public class UserValidatorService {
             validateEmail(email);
         }
 
+        UserType effectiveType;
         if (type != null) {
-            validateType(type);
+            effectiveType = validateType(type);
+        } else {
+            effectiveType = UserType.fromInput(existingUser.getType());
         }
 
         if (password != null) {
             String effectiveLogin = login != null ? login : existingUser.getLogin();
             String effectiveEmail = email != null ? email : existingUser.getEmail();
-            validatePassword(password, effectiveLogin, effectiveEmail);
+            validatePassword(password, effectiveLogin, effectiveEmail, effectiveType);
         }
     }
 
@@ -105,8 +117,15 @@ public class UserValidatorService {
         }
     }
 
-    private void validateType(String type) {
-        UserType.fromInput(type);
+    /**
+     * Validates the type string and returns the resolved {@link UserType}.
+     *
+     * @param type the raw type string from the request.
+     * @return the resolved {@link UserType}.
+     * @throws IllegalArgumentException if the type is blank or unrecognised.
+     */
+    private UserType validateType(String type) {
+        return UserType.fromInput(type);
     }
 
     private void validateLogin(String login) {
@@ -129,42 +148,18 @@ public class UserValidatorService {
         }
     }
 
-    private void validatePassword(String password, String login, String email) {
-        if (password == null || password.isEmpty()) {
-            throw new IllegalArgumentException("Password cannot be blank");
-        }
-
-        if (password.length() < MIN_PASSWORD_LENGTH || password.length() > MAX_PASSWORD_LENGTH) {
-            throw new IllegalArgumentException("Password must be between 8 and 128 characters long");
-        }
-
-        if (password.equals(login)) {
-            throw new IllegalArgumentException("Password must not be equal to the login");
-        }
-
-        if (password.equals(email)) {
-            throw new IllegalArgumentException("Password must not be equal to the email");
-        }
-
-        int complexityScore = 0;
-
-        if (Pattern.compile("[A-Z]").matcher(password).find()) {
-            complexityScore++;
-        }
-        if (Pattern.compile("[a-z]").matcher(password).find()) {
-            complexityScore++;
-        }
-        if (Pattern.compile("[0-9]").matcher(password).find()) {
-            complexityScore++;
-        }
-        if (Pattern.compile("[^a-zA-Z0-9]").matcher(password).find()) {
-            complexityScore++;
-        }
-
-        if (complexityScore < MIN_REQUIRED_COMPLEXITY_TYPES) {
-            throw new IllegalArgumentException(
-                    "Password must contain at least 3 of the following character types: " +
-                    "uppercase letters, lowercase letters, digits, and special characters");
-        }
+    /**
+     * Delegates password validation to the strategy selected by the
+     * {@link PasswordStrategyFactory} for the given user type.
+     *
+     * @param password the raw password to validate.
+     * @param login    the effective login (used for equality check).
+     * @param email    the effective email (used for equality check).
+     * @param userType the role of the user, used to select the strategy.
+     * @throws IllegalArgumentException if the password violates the selected strategy's rules.
+     */
+    private void validatePassword(String password, String login, String email, UserType userType) {
+        PasswordValidationStrategy strategy = passwordStrategyFactory.getStrategy(userType);
+        strategy.validate(password, login, email);
     }
 }
