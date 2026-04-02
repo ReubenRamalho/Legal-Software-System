@@ -1,5 +1,7 @@
 package com.example.legal_system.infrastructure.persistence.process;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Repository;
 
 import com.example.legal_system.domain.IProcessRepository;
@@ -30,4 +32,10 @@ public class ProcessRepositoryImpl implements IProcessRepository {
     public long count() {
         return processJpaRepository.count();
     }
+
+    @Override
+    public Optional<Process> findById(String id) {
+        return processJpaRepository.findById(id);
+    }
 }
+

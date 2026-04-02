@@ -7,6 +7,7 @@ import com.example.legal_system.domain.IProcessRepository;
 import com.example.legal_system.domain.IUserRepository;
 import com.example.legal_system.domain.RepositoryFactory;
 import com.example.legal_system.dto.CreateProcessDTO;
+import com.example.legal_system.enums.StatusProcess;
 import com.example.legal_system.model.Process;
 
 /**
@@ -22,11 +23,14 @@ public class ProcessService {
     private final IProcessRepository processRepository;
     private final IUserRepository userRepository;
     private final ILogger logger;
+    private final ProcessStatusNotifier notifier;
 
-    public ProcessService(RepositoryFactory repositoryFactory, ILogger logger) {
+    public ProcessService(RepositoryFactory repositoryFactory, ILogger logger,
+            ProcessStatusNotifier notifier) {
         this.processRepository = repositoryFactory.getProcessRepository();
         this.userRepository = repositoryFactory.getUserRepository();
         this.logger = logger;
+        this.notifier = notifier;
     }
 
     /**
@@ -64,5 +68,33 @@ public class ProcessService {
 
         processRepository.save(process);
         logger.info("Legal process created successfully. CNJ: " + process.getNumberCnj());
+    }
+
+    /**
+     * Updates the status of an existing legal process and notifies all registered
+     * {@link com.example.legal_system.domain.ProcessObserver}s of the transition.
+     *
+     * <p>The previous status is captured before the change so that observers receive
+     * full context about the transition (old → new).</p>
+     *
+     * @param processId the UUID string of the process to update.
+     * @param newStatus the target {@link StatusProcess}.
+     * @throws IllegalArgumentException if no process exists with the given ID.
+     */
+    public void updateProcessStatus(String processId, StatusProcess newStatus) {
+        Process process = processRepository.findById(processId)
+                .orElseThrow(() -> {
+                    logger.warn("Status update failed: process not found. ID: " + processId);
+                    return new IllegalArgumentException("Process not found");
+                });
+
+        StatusProcess oldStatus = process.getStatus();
+        process.setStatus(newStatus);
+        processRepository.save(process);
+
+        logger.info("Process status updated. ID: " + processId
+                + " | " + oldStatus.name() + " → " + newStatus.name());
+
+        notifier.notifyObservers(process, oldStatus);
     }
 }

@@ -1,5 +1,7 @@
 package com.example.legal_system.domain;
 
+import java.util.Optional;
+
 import com.example.legal_system.model.Process;
 
 /**
@@ -24,4 +26,13 @@ public interface IProcessRepository {
      * @return the process count.
      */
     long count();
+
+    /**
+     * Finds a legal process by its unique ID.
+     *
+     * @param id the UUID string of the process.
+     * @return an {@link Optional} containing the process if found, or empty otherwise.
+     */
+    Optional<Process> findById(String id);
 }
+
