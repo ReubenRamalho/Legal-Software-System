@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.example.legal_system.dto.AccessRecordDTO;
+import com.example.legal_system.model.Access;
 
 /**
  * Domain repository contract for {@link com.example.legal_system.model.Access} query operations.
@@ -21,4 +22,11 @@ public interface IAccessRepository {
      * @return a list of matching {@link AccessRecordDTO} objects, never {@code null}.
      */
     List<AccessRecordDTO> findByHourDateAccessBetween(LocalDate startDate, LocalDate endDate);
+
+    /**
+     * Persists a new access log entry.
+     *
+     * @param access the {@link Access} record to save; must not be {@code null}.
+     */
+    void save(Access access);
 }

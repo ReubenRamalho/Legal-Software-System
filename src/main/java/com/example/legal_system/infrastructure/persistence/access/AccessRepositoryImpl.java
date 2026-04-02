@@ -42,4 +42,9 @@ public class AccessRepositoryImpl implements IAccessRepository {
                         record.getVisitedPage()))
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public void save(Access access) {
+        accessJpaRepository.save(access);
+    }
 }
