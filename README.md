@@ -387,3 +387,80 @@ private void validatePassword(String password, String login, String email, UserT
     strategy.validate(password, login, email);
 }
 ```
+
+---
+
+### 9. Factory Method
+
+Centraliza a criação de entidades em métodos estáticos de fábrica, encapsulando a geração de IDs e a definição de estados iniciais válidos.
+
+**Arquivos:**
+- [`User.java`](src/main/java/com/example/legal_system/model/User.java) — Criação de usuários via `User.create(...)`
+- [`Process.java`](src/main/java/com/example/legal_system/model/Process.java) — Criação de processos com status inicial `ACTIVE`
+- [`Access.java`](src/main/java/com/example/legal_system/model/Access.java) — Criação de registros de acesso via `Access.create(...)`
+
+```java
+@Entity
+public class User {
+    private String id;
+
+    private User(String name, String email, String type, String login, String password) {
+        this.id = UUID.randomUUID().toString();
+        this.name = name;
+        this.email = email;
+        this.type = type;
+        this.login = login;
+        this.password = password;
+    }
+
+    public static User create(String name, String email, String type, String login, String password) {
+        return new User(name, email, type, login, password);
+    }
+}
+
+@Entity
+public class Process {
+    public static Process create(String numberCnj, String title, String description, String clientName,
+            String court, String district) {
+        return new Process(numberCnj, title, description, clientName, court, district);
+    }
+}
+```
+
+---
+
+### 10. Repository
+
+Abstrai o acesso à persistência por meio de contratos de domínio e implementações concretas na infraestrutura. Os Services dependem apenas das interfaces, enquanto as classes `*RepositoryImpl` delegam para os repositórios Spring Data JPA.
+
+**Arquivos:**
+- [`IUserRepository.java`](src/main/java/com/example/legal_system/domain/IUserRepository.java) — Contrato de persistência de usuários
+- [`IProcessRepository.java`](src/main/java/com/example/legal_system/domain/IProcessRepository.java) — Contrato de persistência de processos
+- [`IAccessRepository.java`](src/main/java/com/example/legal_system/domain/IAccessRepository.java) — Contrato de consulta/persistência de acessos
+- [`UserRepositoryImpl.java`](src/main/java/com/example/legal_system/infrastructure/persistence/user/UserRepositoryImpl.java) — Implementação concreta com JPA
+- [`ProcessRepositoryImpl.java`](src/main/java/com/example/legal_system/infrastructure/persistence/process/ProcessRepositoryImpl.java) — Implementação concreta com JPA
+- [`AccessRepositoryImpl.java`](src/main/java/com/example/legal_system/infrastructure/persistence/access/AccessRepositoryImpl.java) — Implementação concreta com JPA
+
+```java
+public interface IUserRepository {
+    User save(User user);
+    Optional<User> findById(String id);
+    List<User> findAll();
+    void deleteById(String id);
+}
+
+@Repository
+public class UserRepositoryImpl implements IUserRepository {
+    private final UserJpaRepository userJpaRepository;
+
+    @Override
+    public User save(User user) {
+        return userJpaRepository.save(user);
+    }
+
+    @Override
+    public List<User> findAll() {
+        return userJpaRepository.findAll();
+    }
+}
+```
